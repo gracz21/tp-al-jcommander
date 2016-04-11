@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
@@ -31,16 +36,70 @@
                       </Menu>
                   </menus>
               </MenuBar>
+            <ToolBar prefHeight="40.0" prefWidth="200.0">
+              <items>
+                <Button mnemonicParsing="false" text="Button" />
+              </items>
+            </ToolBar>
               <SplitPane dividerPositions="0.5" prefHeight="372.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
                   <items>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="295.0">
                           <opaqueInsets>
                               <Insets />
                           </opaqueInsets>
+                     <children>
+                        <VBox prefHeight="321.0" prefWidth="295.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <ToolBar prefHeight="40.0" prefWidth="200.0">
+                                <items>
+                                  <Button mnemonicParsing="false" text="Button" />
+                                </items>
+                              </ToolBar>
+                              <TableView prefHeight="366.0" prefWidth="295.0" VBox.vgrow="ALWAYS">
+                                <columns>
+                                  <TableColumn prefWidth="75.0" text="C1" />
+                                  <TableColumn prefWidth="75.0" text="C2" />
+                                </columns>
+                              </TableView>
+                              <ToolBar prefHeight="40.0" prefWidth="200.0">
+                                 <items>
+                                    <Label text="Label" />
+                                 </items>
+                              </ToolBar>
+                           </children>
+                        </VBox>
+                     </children>
                   </AnchorPane>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" />
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                     <children>
+                        <VBox prefHeight="321.0" prefWidth="295.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <ToolBar prefHeight="40.0" prefWidth="200.0">
+                                <items>
+                                  <Button mnemonicParsing="false" text="Button" />
+                                </items>
+                              </ToolBar>
+                              <TableView prefHeight="366.0" prefWidth="295.0" VBox.vgrow="ALWAYS">
+                                <columns>
+                                  <TableColumn prefWidth="75.0" text="C1" />
+                                  <TableColumn prefWidth="75.0" text="C2" />
+                                </columns>
+                              </TableView>
+                              <ToolBar prefHeight="40.0" prefWidth="200.0">
+                                 <items>
+                                    <Label text="Label" />
+                                 </items>
+                              </ToolBar>
+                           </children>
+                        </VBox>
+                     </children></AnchorPane>
                   </items>
               </SplitPane>
+            <ToolBar prefHeight="40.0" prefWidth="200.0">
+               <items>
+                  <Label text="Label" />
+               </items>
+            </ToolBar>
          </children>
       </VBox>
     </children>
