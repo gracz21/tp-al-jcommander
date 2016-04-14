@@ -1,44 +1,49 @@
 package pl.poznan.put.fc.tpal.jcommander.util;
 
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import pl.poznan.put.fc.tpal.jcommander.model.FileListEntry;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 
 /**
  * @author Kamil Walkowiak
  */
 public abstract class FileOperationsUtil {
-    public static ObservableList<FileListEntry> listPathContent(String path) throws IOException {
-        ObservableList<FileListEntry> pathContent = FXCollections.observableArrayList();
-        File directory = new File(path);
-        if(directory.exists()) {
-            if(directory.isDirectory()) {
-                File[] files = directory.listFiles();
-                BasicFileAttributes attr;
-                for(File file : files) {
-                    if(file.isFile()) {
-                        Path path1 = file.toPath();
-                        attr = Files.readAttributes(path1, BasicFileAttributes.class);
-                        pathContent.add(new FileListEntry(file.getName(), Long.toString(file.length()), attr.creationTime()));
-                    } else {
-                        Path path1 = file.toPath();
-                        attr = Files.readAttributes(path1, BasicFileAttributes.class);
-                        pathContent.add(new FileListEntry(file.getName(), "<DIR>", attr.creationTime()));
-                    }
-                }
+    public static ObservableList<FileListEntry> listPathContent(ObservableList<FileListEntry> fileListEntries, String path) throws IOException {
+        File pathContent = new File(path);
+        if(pathContent.exists()) {
+            if(pathContent.isDirectory()) {
+                File[] files = pathContent.listFiles(file -> !file.isHidden() && Files.isReadable(file.toPath()));
+                fileListEntries.clear();
+                getDirectoryContent(files, fileListEntries);
             } else {
-                System.out.println("Weep");
+                getFileContent(pathContent);
             }
         } else {
+            //TODO Dialog or nothing
             System.out.println("WTF");
         }
 
-        return pathContent;
+        return fileListEntries;
+    }
+
+    private static void getDirectoryContent(File[] files, ObservableList<FileListEntry> fileListEntries) throws IOException {
+        BasicFileAttributes attr;
+        for(File file : files) {
+            if(file.isFile()) {
+                attr = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
+                fileListEntries.add(new FileListEntry(file.getName(), Long.toString(file.length()), attr.creationTime(), file.getPath()));
+            } else {
+                attr = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
+                fileListEntries.add(new FileListEntry(file.getName(), "<DIR>", attr.creationTime(), file.getPath()));
+            }
+        }
+    }
+
+    private static void getFileContent(File file) {
+
     }
 }

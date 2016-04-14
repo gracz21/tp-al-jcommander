@@ -5,7 +5,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import pl.poznan.put.fc.tpal.jcommander.controller.RootController;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -22,9 +21,6 @@ public class Main extends Application {
 
         primaryStage.setTitle("JCommander");
         primaryStage.setScene(new Scene(root));
-
-        RootController controller = loader.getController();
-        controller.setupData();
 
         primaryStage.show();
     }

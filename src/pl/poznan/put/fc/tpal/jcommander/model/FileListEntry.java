@@ -13,12 +13,13 @@ public class FileListEntry {
     private StringProperty fileName;
     private StringProperty fileSize;
     private FileTime fileDateOfCreation;
-    private Path fullFilePath;
+    private String fullFilePath;
 
-    public FileListEntry(String fileName, String fileSize, FileTime fileDateOfCreation) {
+    public FileListEntry(String fileName, String fileSize, FileTime fileDateOfCreation, String fullFilePath) {
         this.fileName = new SimpleStringProperty(fileName);
         this.fileSize = new SimpleStringProperty(fileSize);
         this.fileDateOfCreation = fileDateOfCreation;
+        this.fullFilePath = fullFilePath;
     }
 
     public String getFileName() {
@@ -41,7 +42,7 @@ public class FileListEntry {
         return fileDateOfCreation;
     }
 
-    public Path getFullFilePath() {
+    public String getFullFilePath() {
         return fullFilePath;
     }
 }
