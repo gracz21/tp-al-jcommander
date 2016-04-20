@@ -4,6 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.input.KeyCode;
 import pl.poznan.put.fc.tpal.jcommander.model.FileListEntry;
 import pl.poznan.put.fc.tpal.jcommander.util.FileOperationsUtil;
 
@@ -29,7 +30,16 @@ public class RootController {
         for(TableView<FileListEntry> fileList: fileLists) {
             fileList.setItems(FileOperationsUtil.listPathContent(FXCollections.observableArrayList(), "C:\\"));
             fileList.setOnMousePressed(event -> {
-                if (event.isPrimaryButtonDown() && event.getClickCount() == 2) {
+                if(event.isPrimaryButtonDown() && event.getClickCount() == 2) {
+                    try {
+                        handleChangePath(fileList);
+                    } catch(IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            fileList.setOnKeyPressed(event -> {
+                if(event.getCode() == KeyCode.ENTER) {
                     try {
                         handleChangePath(fileList);
                     } catch(IOException e) {
