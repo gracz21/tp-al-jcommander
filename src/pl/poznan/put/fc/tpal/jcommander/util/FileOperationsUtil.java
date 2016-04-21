@@ -3,6 +3,7 @@ package pl.poznan.put.fc.tpal.jcommander.util;
 import javafx.collections.ObservableList;
 import pl.poznan.put.fc.tpal.jcommander.model.FileListEntry;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -18,6 +19,11 @@ public abstract class FileOperationsUtil {
             if(pathContent.isDirectory()) {
                 File[] files = pathContent.listFiles(file -> !file.isHidden() && Files.isReadable(file.toPath()));
                 fileListEntries.clear();
+                if(pathContent.getParent() != null) {
+                    File parent = pathContent.getParentFile();
+                    BasicFileAttributes attr = Files.readAttributes(parent.toPath(), BasicFileAttributes.class);
+                    fileListEntries.add(new FileListEntry("..", "<DIR>", attr.creationTime(), parent.getPath()));
+                }
                 getDirectoryContent(files, fileListEntries);
             } else {
                 getFileContent(pathContent);
@@ -43,7 +49,7 @@ public abstract class FileOperationsUtil {
         }
     }
 
-    private static void getFileContent(File file) {
-
+    private static void getFileContent(File file) throws IOException {
+        Desktop.getDesktop().open(file);
     }
 }
