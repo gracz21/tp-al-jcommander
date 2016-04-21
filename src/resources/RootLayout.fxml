@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
@@ -37,7 +38,8 @@
                 </opaqueInsets>
                 <VBox prefHeight="321.0" prefWidth="295.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <ToolBar prefHeight="40.0" prefWidth="200.0">
-                        <Button mnemonicParsing="false" text="Button" />
+                  <ComboBox fx:id="leftRootsComboBox" prefWidth="150.0" />
+                  <Label fx:id="leftSizeLabel" text="Label" />
                     </ToolBar>
                     <TableView fx:id="leftFileList" prefHeight="366.0" prefWidth="295.0" VBox.vgrow="ALWAYS">
                         <columns>
@@ -57,7 +59,10 @@
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                 <VBox prefHeight="321.0" prefWidth="295.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <ToolBar prefHeight="40.0" prefWidth="200.0">
-                        <Button mnemonicParsing="false" text="Button" />
+                  <items>
+                     <ComboBox fx:id="rightRootsComboBox" prefWidth="150.0" />
+                     <Label fx:id="rightSizeLabel" text="Label" />
+                  </items>
                     </ToolBar>
                     <TableView fx:id="rightFileList" prefHeight="366.0" prefWidth="295.0" VBox.vgrow="ALWAYS">
                         <columns>
@@ -81,20 +86,24 @@
     </VBox>
     <fx:define>
         <ArrayList fx:id="fileLists">
-            <fx:reference source="leftFileList"/>
-            <fx:reference source="rightFileList"/>
+            <fx:reference source="leftFileList" />
+            <fx:reference source="rightFileList" />
         </ArrayList>
         <ArrayList fx:id="nameColumns">
-            <fx:reference source="leftNameColumn"/>
-            <fx:reference source="rightNameColumn"/>
+            <fx:reference source="leftNameColumn" />
+            <fx:reference source="rightNameColumn" />
         </ArrayList>
         <ArrayList fx:id="sizeColumns">
-            <fx:reference source="leftSizeColumn"/>
-            <fx:reference source="rightSizeColumn"/>
+            <fx:reference source="leftSizeColumn" />
+            <fx:reference source="rightSizeColumn" />
         </ArrayList>
         <ArrayList fx:id="dateColumns">
-            <fx:reference source="leftDateColumn"/>
-            <fx:reference source="rightDateColumn"/>
+            <fx:reference source="leftDateColumn" />
+            <fx:reference source="rightDateColumn" />
+        </ArrayList>
+        <ArrayList fx:id="rootsComboBoxes">
+            <fx:reference source="leftRootsComboBox" />
+            <fx:reference source="rightRootsComboBox" />
         </ArrayList>
     </fx:define>
 </AnchorPane>

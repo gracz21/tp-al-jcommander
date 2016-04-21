@@ -10,12 +10,12 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class Main extends Application {
+    private static Locale locale = Locale.getDefault();
+    private static ResourceBundle bundle = ResourceBundle.getBundle("strings", locale);
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("view/RootLayout.fxml"));
-        Locale locale = Locale.getDefault();
-        ResourceBundle bundle = ResourceBundle.getBundle("strings", locale);
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("../../../../../../resources/RootLayout.fxml"));
         loader.setResources(bundle);
         Parent root = loader.load();
 
@@ -25,8 +25,15 @@ public class Main extends Application {
         primaryStage.show();
     }
 
-
     public static void main(String[] args) {
         launch(args);
+    }
+
+    public static Locale getLocale() {
+        return locale;
+    }
+
+    public static ResourceBundle getBundle() {
+        return bundle;
     }
 }
