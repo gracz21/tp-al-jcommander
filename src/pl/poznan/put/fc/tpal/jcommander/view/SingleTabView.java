@@ -7,7 +7,6 @@ import pl.poznan.put.fc.tpal.jcommander.Main;
 import pl.poznan.put.fc.tpal.jcommander.controller.SingleTabController;
 
 import java.io.IOException;
-import java.net.URL;
 
 /**
  * @author Kamil Walkowiak

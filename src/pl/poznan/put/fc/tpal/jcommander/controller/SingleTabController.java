@@ -69,7 +69,8 @@ public class SingleTabController {
         fileList.setOnMousePressed(event -> {
             if(event.isPrimaryButtonDown() && event.getClickCount() == 2) {
                 try {
-                    handleChangePath(fileList);
+                    FileListEntry fileListEntry = fileList.getSelectionModel().getSelectedItem();
+                    handleChangePath(fileListEntry.getFullFilePath(), fileListEntry.getFileName());
                 } catch(IOException e) {
                     e.printStackTrace();
                 }
@@ -78,7 +79,8 @@ public class SingleTabController {
         fileList.setOnKeyPressed(event -> {
             if(event.getCode() == KeyCode.ENTER) {
                 try {
-                    handleChangePath(fileList);
+                    FileListEntry fileListEntry = fileList.getSelectionModel().getSelectedItem();
+                    handleChangePath(fileListEntry.getFullFilePath(), fileListEntry.getFileName());
                 } catch(IOException e) {
                     e.printStackTrace();
                 }
@@ -91,13 +93,25 @@ public class SingleTabController {
         Arrays.stream(File.listRoots()).forEach(file -> rootsList.add(file.toString()));
         rootsComboBox.setItems(rootsList);
         rootsComboBox.setValue(rootsList.get(0));
+
+        rootsComboBox.setOnAction(event -> {
+            String root = rootsComboBox.getSelectionModel().getSelectedItem();
+            try {
+                handleChangePath(root, root);
+                //TODO
+                //setSizeLabel();
+            } catch(IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     private void setSizeLabel() {
-
     }
 
-    private void handleChangePath(TableView<FileListEntry> table) throws IOException {
-        FileOperationsUtil.listPathContent(table.getItems(), table.getSelectionModel().getSelectedItem().getFullFilePath());
+    private void handleChangePath(String path, String fileName) throws IOException {
+        currentPath = path;
+        currentDirectory.set(fileName);
+        FileOperationsUtil.listPathContent(fileList.getItems(), path);
     }
 }

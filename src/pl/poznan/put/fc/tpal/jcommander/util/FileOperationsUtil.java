@@ -13,6 +13,16 @@ import java.nio.file.attribute.BasicFileAttributes;
  * @author Kamil Walkowiak
  */
 public abstract class FileOperationsUtil {
+    public static String getRootSpace(String root) {
+        File rootFile = new File(root);
+        return Long.toString(rootFile.getTotalSpace());
+    }
+
+    public static String getRootFreeSpace(String root) {
+        File rootFile = new File(root);
+        return Long.toString(rootFile.getFreeSpace());
+    }
+
     public static ObservableList<FileListEntry> listPathContent(ObservableList<FileListEntry> fileListEntries, String path) throws IOException {
         File pathContent = new File(path);
         if(pathContent.exists()) {

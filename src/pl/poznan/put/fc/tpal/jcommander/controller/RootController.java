@@ -1,5 +1,6 @@
 package pl.poznan.put.fc.tpal.jcommander.controller;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -35,6 +36,21 @@ public class RootController {
                 event.consume();
             });
         }
+    }
+
+    @FXML
+    private void handleMenuClose() {
+        Platform.exit();
+    }
+
+    @FXML
+    private void handleMenuToEnglish() {
+
+    }
+
+    @FXML
+    private void handleMenuToPolish() {
+
     }
 
     private Tab createTab() {

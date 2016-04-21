@@ -10,7 +10,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class Main extends Application {
-    private static Locale locale = Locale.getDefault();
+    private static Locale locale = new Locale("pl");
     private static ResourceBundle bundle = ResourceBundle.getBundle("strings", locale);
 
     @Override

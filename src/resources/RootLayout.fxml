@@ -5,9 +5,11 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.RadioMenuItem?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
@@ -18,12 +20,22 @@
     <VBox prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <MenuBar prefWidth="600.0">
             <Menu mnemonicParsing="false" text="%menu.file">
-                <MenuItem mnemonicParsing="false" text="%menu.file.close" />
+                <MenuItem mnemonicParsing="false" onAction="#handleMenuClose" text="%menu.file.close" />
             </Menu>
-            <Menu mnemonicParsing="false" text="Edit">
+            <Menu mnemonicParsing="false" text="%menu.edit">
                 <MenuItem mnemonicParsing="false" text="Delete" />
             </Menu>
-            <Menu mnemonicParsing="false" text="Help">
+         <Menu mnemonicParsing="false" text="%menu.changeLanguage">
+            <items>
+               <RadioMenuItem mnemonicParsing="false" onAction="#handleMenuToEnglish" text="English">
+                  <toggleGroup>
+                     <ToggleGroup fx:id="language" />
+                  </toggleGroup>
+               </RadioMenuItem>
+               <RadioMenuItem mnemonicParsing="false" onAction="#handleMenuToPolish" selected="true" text="Polski" toggleGroup="$language" />
+            </items>
+         </Menu>
+            <Menu mnemonicParsing="false" text="%menu.help">
                 <MenuItem mnemonicParsing="false" text="About" />
             </Menu>
         </MenuBar>
