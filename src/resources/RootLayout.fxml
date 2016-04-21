@@ -1,21 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 
-<?import java.util.ArrayList?>
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.poznan.put.fc.tpal.jcommander.controller.RootController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.poznan.put.fc.tpal.jcommander.controller.RootController">
     <VBox prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <MenuBar prefWidth="600.0">
             <Menu mnemonicParsing="false" text="%menu.file">
@@ -33,77 +31,34 @@
         </ToolBar>
         <SplitPane dividerPositions="0.5" prefHeight="372.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="295.0">
-                <opaqueInsets>
-                    <Insets />
-                </opaqueInsets>
-                <VBox prefHeight="321.0" prefWidth="295.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                    <ToolBar prefHeight="40.0" prefWidth="200.0">
-                  <ComboBox fx:id="leftRootsComboBox" prefWidth="150.0" />
-                  <Label fx:id="leftSizeLabel" text="Label" />
-                    </ToolBar>
-                    <TableView fx:id="leftFileList" prefHeight="366.0" prefWidth="295.0" VBox.vgrow="ALWAYS">
-                        <columns>
-                            <TableColumn fx:id="leftNameColumn" prefWidth="75.0" text="%fileList.columns.name" />
-                            <TableColumn fx:id="leftSizeColumn" prefWidth="75.0" text="%fileList.columns.size" />
-                            <TableColumn fx:id="leftDateColumn" prefWidth="75.0" text="%fileList.columns.date" />
-                        </columns>
-                        <columnResizePolicy>
-                            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                        </columnResizePolicy>
-                    </TableView>
-                    <ToolBar prefHeight="40.0" prefWidth="200.0">
-                        <Label text="Label" />
-                    </ToolBar>
-                </VBox>
-            </AnchorPane>
+            <children>
+               <TabPane fx:id="leftTabPane" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                 <tabs>
+                   <Tab text="Untitled Tab 1">
+                        <content>
+                           <BorderPane prefHeight="200.0" prefWidth="200.0" />
+                        </content>
+                   </Tab>
+                   <Tab text="+" />
+                 </tabs>
+               </TabPane>
+            </children></AnchorPane>
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
-                <VBox prefHeight="321.0" prefWidth="295.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                    <ToolBar prefHeight="40.0" prefWidth="200.0">
-                  <items>
-                     <ComboBox fx:id="rightRootsComboBox" prefWidth="150.0" />
-                     <Label fx:id="rightSizeLabel" text="Label" />
-                  </items>
-                    </ToolBar>
-                    <TableView fx:id="rightFileList" prefHeight="366.0" prefWidth="295.0" VBox.vgrow="ALWAYS">
-                        <columns>
-                            <TableColumn fx:id="rightNameColumn" prefWidth="75.0" text="%fileList.columns.name" />
-                            <TableColumn fx:id="rightSizeColumn" prefWidth="75.0" text="%fileList.columns.size" />
-                            <TableColumn fx:id="rightDateColumn" prefWidth="75.0" text="%fileList.columns.date" />
-                        </columns>
-                        <columnResizePolicy>
-                            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                        </columnResizePolicy>
-                    </TableView>
-                    <ToolBar prefHeight="40.0" prefWidth="200.0">
-                        <Label text="Label" />
-                    </ToolBar>
-                </VBox>
-            </AnchorPane>
+            <children>
+               <TabPane fx:id="rightTabPane" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                 <tabs>
+                   <Tab text="Untitled Tab 1">
+                        <content>
+                           <BorderPane prefHeight="200.0" prefWidth="200.0" />
+                        </content>
+                   </Tab>
+                   <Tab text="+" />
+                 </tabs>
+               </TabPane>
+            </children></AnchorPane>
         </SplitPane>
         <ToolBar prefHeight="40.0" prefWidth="200.0">
             <Label text="Label" />
         </ToolBar>
     </VBox>
-    <fx:define>
-        <ArrayList fx:id="fileLists">
-            <fx:reference source="leftFileList" />
-            <fx:reference source="rightFileList" />
-        </ArrayList>
-        <ArrayList fx:id="nameColumns">
-            <fx:reference source="leftNameColumn" />
-            <fx:reference source="rightNameColumn" />
-        </ArrayList>
-        <ArrayList fx:id="sizeColumns">
-            <fx:reference source="leftSizeColumn" />
-            <fx:reference source="rightSizeColumn" />
-        </ArrayList>
-        <ArrayList fx:id="dateColumns">
-            <fx:reference source="leftDateColumn" />
-            <fx:reference source="rightDateColumn" />
-        </ArrayList>
-        <ArrayList fx:id="rootsComboBoxes">
-            <fx:reference source="leftRootsComboBox" />
-            <fx:reference source="rightRootsComboBox" />
-        </ArrayList>
-    </fx:define>
 </AnchorPane>
