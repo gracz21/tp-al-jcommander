@@ -1,5 +1,7 @@
 package pl.poznan.put.fc.tpal.jcommander.controller;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -20,6 +22,7 @@ import java.util.Arrays;
  */
 public class SingleTabController {
     private String currentPath;
+    private StringProperty currentDirectory;
     @FXML
     private TableView<FileListEntry> fileList;
     @FXML
@@ -36,10 +39,23 @@ public class SingleTabController {
     @FXML
     private void initialize() throws IOException {
         currentPath = "C:\\";
+        currentDirectory = new SimpleStringProperty("C:\\");
 
         initializeColumns();
         initializeFileLists();
         initializeRootsComboBoxes();
+    }
+
+    public String getCurrentPath() {
+        return currentPath;
+    }
+
+    public String getCurrentDirectory() {
+        return currentDirectory.get();
+    }
+
+    public StringProperty currentDirectoryProperty() {
+        return currentDirectory;
     }
 
     private void initializeColumns() {

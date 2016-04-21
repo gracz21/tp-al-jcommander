@@ -1,31 +1,56 @@
 package pl.poznan.put.fc.tpal.jcommander.controller;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.BorderPane;
 import pl.poznan.put.fc.tpal.jcommander.view.SingleTabView;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class RootController {
     @FXML
-    private TabPane leftTabPane;
-    @FXML
-    private TabPane rightTabPane;
+    private ArrayList<TabPane> tabPanes;
 
     @FXML
     private void initialize() throws IOException {
-        SingleTabView leftFirstTab = new SingleTabView();
-        SingleTabView rightFirstTab = new SingleTabView();
+        for(TabPane tabPane: tabPanes) {
+            tabPane.getTabs().stream().forEach(tab ->tab.setClosable(false));
+            setTabContent(tabPane.getTabs().get(0));
 
-        BorderPane borderPane = (BorderPane) leftTabPane.getTabs().get(0).getContent();
-        borderPane.setCenter(leftFirstTab.getLayout());
-        leftFirstTab.getLayout().prefWidthProperty().bind(borderPane.widthProperty());
-        leftFirstTab.getLayout().prefHeightProperty().bind(borderPane.heightProperty());
+            Tab addNewTab = tabPane.getTabs().get(1);
 
-        borderPane = (BorderPane) rightTabPane.getTabs().get(0).getContent();
-        borderPane.setCenter(rightFirstTab.getLayout());
-        rightFirstTab.getLayout().prefWidthProperty().bind(borderPane.widthProperty());
-        rightFirstTab.getLayout().prefHeightProperty().bind(borderPane.heightProperty());
+            tabPane.setOnMouseClicked(event -> {
+                if(addNewTab.isSelected()) {
+                    Tab newTab = createTab();
+                    int position = tabPane.getTabs().size() - 1;
+                    tabPane.getTabs().add(position, newTab);
+                    try {
+                        setTabContent(newTab);
+                    } catch(IOException e) {
+                        e.printStackTrace();
+                    }
+                    tabPane.getSelectionModel().clearAndSelect(position);
+                }
+                event.consume();
+            });
+        }
+    }
+
+    private Tab createTab() {
+        Tab tab = new Tab();
+        tab.setContent(new BorderPane());
+        return tab;
+    }
+
+    private void setTabContent(Tab tab) throws IOException {
+        SingleTabView singleTabView = new SingleTabView();
+
+        BorderPane borderPane = (BorderPane) tab.getContent();
+        borderPane.setCenter(singleTabView.getLayout());
+        singleTabView.getLayout().prefWidthProperty().bind(borderPane.widthProperty());
+        singleTabView.getLayout().prefHeightProperty().bind(borderPane.heightProperty());
+        tab.textProperty().bind(singleTabView.getController().currentDirectoryProperty());
     }
 }

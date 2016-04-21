@@ -13,6 +13,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 
+<?import java.util.ArrayList?>
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.poznan.put.fc.tpal.jcommander.controller.RootController">
     <VBox prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <MenuBar prefWidth="600.0">
@@ -32,7 +33,7 @@
         <SplitPane dividerPositions="0.5" prefHeight="372.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="295.0">
             <children>
-               <TabPane fx:id="leftTabPane" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <TabPane fx:id="leftTabPane" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                  <tabs>
                    <Tab text="Untitled Tab 1">
                         <content>
@@ -61,4 +62,10 @@
             <Label text="Label" />
         </ToolBar>
     </VBox>
+    <fx:define>
+        <ArrayList fx:id="tabPanes">
+            <fx:reference source="leftTabPane" />
+            <fx:reference source="rightTabPane" />
+        </ArrayList>
+    </fx:define>
 </AnchorPane>
