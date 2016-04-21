@@ -20,7 +20,6 @@ public class RootController {
             setTabContent(tabPane.getTabs().get(0));
 
             Tab addNewTab = tabPane.getTabs().get(1);
-
             tabPane.setOnMouseClicked(event -> {
                 if(addNewTab.isSelected()) {
                     Tab newTab = createTab();
