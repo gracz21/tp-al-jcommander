@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.BorderPane;
+import pl.poznan.put.fc.tpal.jcommander.util.BundleUtil;
 import pl.poznan.put.fc.tpal.jcommander.view.SingleTabView;
 
 import java.io.IOException;
@@ -45,12 +46,12 @@ public class RootController {
 
     @FXML
     private void handleMenuToEnglish() {
-
+        BundleUtil.getInstance().setLocale("en");
     }
 
     @FXML
     private void handleMenuToPolish() {
-
+        BundleUtil.getInstance().setLocale("pl");
     }
 
     private Tab createTab() {

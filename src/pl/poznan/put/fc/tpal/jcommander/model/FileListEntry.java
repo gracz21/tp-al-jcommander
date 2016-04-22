@@ -3,6 +3,7 @@ package pl.poznan.put.fc.tpal.jcommander.model;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import pl.poznan.put.fc.tpal.jcommander.Main;
+import pl.poznan.put.fc.tpal.jcommander.util.BundleUtil;
 
 import javax.swing.*;
 import java.nio.file.attribute.FileTime;
@@ -22,7 +23,7 @@ public class FileListEntry {
     public FileListEntry(String fileName, String fileSize, FileTime fileDateOfCreation, String fullFilePath, Icon swingIcon) {
         this.nameColumnEntry = new NameColumnEntry(fileName, swingIcon);
         this.fileSize = new SimpleStringProperty(fileSize);
-        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT, Main.getLocale());
+        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT, BundleUtil.getInstance().getLocale());
         this.formattedFileDateOfCreation = new SimpleStringProperty(df.format(fileDateOfCreation.toMillis()));
         this.fileDateOfCreation = fileDateOfCreation;
         this.fullFilePath = fullFilePath;

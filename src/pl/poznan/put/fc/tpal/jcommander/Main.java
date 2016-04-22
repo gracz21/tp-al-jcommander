@@ -5,22 +5,28 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import pl.poznan.put.fc.tpal.jcommander.util.BundleUtil;
 
-import java.util.Locale;
-import java.util.ResourceBundle;
+import java.io.IOException;
+import java.util.Observable;
+import java.util.Observer;
 
-public class Main extends Application {
-    private static Locale locale = new Locale("pl");
-    private static ResourceBundle bundle = ResourceBundle.getBundle("strings", locale);
+public class Main extends Application implements Observer {
+    private FXMLLoader loader;
+    private Parent root;
+    private Stage primaryStage;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("../../../../../../resources/RootLayout.fxml"));
-        loader.setResources(bundle);
+        loader = new FXMLLoader(getClass().getResource("../../../../../../resources/RootLayout.fxml"));
+        loader.setResources(BundleUtil.getInstance().getBundle());
         Parent root = loader.load();
 
         primaryStage.setTitle("JCommander");
         primaryStage.setScene(new Scene(root));
+        this.primaryStage = primaryStage;
+
+        BundleUtil.getInstance().addObserver(this);
 
         primaryStage.show();
     }
@@ -29,11 +35,16 @@ public class Main extends Application {
         launch(args);
     }
 
-    public static Locale getLocale() {
-        return locale;
-    }
-
-    public static ResourceBundle getBundle() {
-        return bundle;
+    @Override
+    public void update(Observable o, Object arg) {
+        loader.setResources(BundleUtil.getInstance().getBundle());
+        try {
+            loader.setRoot(null);
+            loader.setController(null);
+            root = loader.load();
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+        this.primaryStage.getScene().setRoot(root);
     }
 }
