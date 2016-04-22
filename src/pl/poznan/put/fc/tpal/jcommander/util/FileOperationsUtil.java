@@ -3,6 +3,8 @@ package pl.poznan.put.fc.tpal.jcommander.util;
 import javafx.collections.ObservableList;
 import pl.poznan.put.fc.tpal.jcommander.model.FileListEntry;
 
+import javax.swing.*;
+import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -31,8 +33,9 @@ public abstract class FileOperationsUtil {
                 fileListEntries.clear();
                 if(pathContent.getParent() != null) {
                     File parent = pathContent.getParentFile();
+                    Icon icon = FileSystemView.getFileSystemView().getSystemIcon(parent);
                     BasicFileAttributes attr = Files.readAttributes(parent.toPath(), BasicFileAttributes.class);
-                    fileListEntries.add(new FileListEntry("..", "<DIR>", attr.creationTime(), parent.getPath()));
+                    fileListEntries.add(new FileListEntry("..", "<DIR>", attr.creationTime(), parent.getPath(), icon));
                 }
                 getDirectoryContent(files, fileListEntries);
             } else {
@@ -46,15 +49,20 @@ public abstract class FileOperationsUtil {
         return fileListEntries;
     }
 
+    public static void deletePathContent(String path) {
+
+    }
+
     private static void getDirectoryContent(File[] files, ObservableList<FileListEntry> fileListEntries) throws IOException {
         BasicFileAttributes attr;
         for(File file : files) {
+            Icon icon = FileSystemView.getFileSystemView().getSystemIcon(file);
             if(file.isFile()) {
                 attr = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
-                fileListEntries.add(new FileListEntry(file.getName(), Long.toString(file.length()), attr.creationTime(), file.getPath()));
+                fileListEntries.add(new FileListEntry(file.getName(), Long.toString(file.length()), attr.creationTime(), file.getPath(), icon));
             } else {
                 attr = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
-                fileListEntries.add(new FileListEntry(file.getName(), "<DIR>", attr.creationTime(), file.getPath()));
+                fileListEntries.add(new FileListEntry(file.getName(), "<DIR>", attr.creationTime(), file.getPath(), icon));
             }
         }
     }

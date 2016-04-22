@@ -5,12 +5,14 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import javafx.util.Callback;
 import pl.poznan.put.fc.tpal.jcommander.model.FileListEntry;
+import pl.poznan.put.fc.tpal.jcommander.model.NameColumnEntry;
 import pl.poznan.put.fc.tpal.jcommander.util.FileOperationsUtil;
 
 import java.io.File;
@@ -26,7 +28,7 @@ public class SingleTabController {
     @FXML
     private TableView<FileListEntry> fileList;
     @FXML
-    private TableColumn<FileListEntry, String> nameColumn;
+    private TableColumn<FileListEntry, NameColumnEntry> nameColumn;
     @FXML
     private TableColumn<FileListEntry, String> sizeColumn;
     @FXML
@@ -59,9 +61,10 @@ public class SingleTabController {
     }
 
     private void initializeColumns() {
-        nameColumn.setCellValueFactory(cellData -> cellData.getValue().fileNameProperty());
+        nameColumn.setCellValueFactory(new PropertyValueFactory("nameColumnEntry"));
+        nameColumn.setCellFactory(param -> new NameColumnEntryCell());
         sizeColumn.setCellValueFactory(cellData -> cellData.getValue().fileSizeProperty());
-        dateColumn.setCellValueFactory(cellData -> cellData.getValue().formatedFileDateOfCreationProperty());
+        dateColumn.setCellValueFactory(cellData -> cellData.getValue().formattedFileDateOfCreationProperty());
     }
 
     private void initializeFileLists() throws IOException {
@@ -70,7 +73,7 @@ public class SingleTabController {
             if(event.isPrimaryButtonDown() && event.getClickCount() == 2) {
                 try {
                     FileListEntry fileListEntry = fileList.getSelectionModel().getSelectedItem();
-                    handleChangePath(fileListEntry.getFullFilePath(), fileListEntry.getFileName());
+                    handleChangePath(fileListEntry.getFullFilePath(), fileListEntry.getNameColumnEntry().getFileName());
                 } catch(IOException e) {
                     e.printStackTrace();
                 }
@@ -80,10 +83,13 @@ public class SingleTabController {
             if(event.getCode() == KeyCode.ENTER) {
                 try {
                     FileListEntry fileListEntry = fileList.getSelectionModel().getSelectedItem();
-                    handleChangePath(fileListEntry.getFullFilePath(), fileListEntry.getFileName());
+                    handleChangePath(fileListEntry.getFullFilePath(), fileListEntry.getNameColumnEntry().getFileName());
                 } catch(IOException e) {
                     e.printStackTrace();
                 }
+            }
+            if(event.getCode() == KeyCode.DELETE) {
+
             }
         });
     }
@@ -113,5 +119,21 @@ public class SingleTabController {
         currentPath = path;
         currentDirectory.set(fileName);
         FileOperationsUtil.listPathContent(fileList.getItems(), path);
+    }
+
+    private static class NameColumnEntryCell extends TableCell<FileListEntry, NameColumnEntry> {
+        @Override
+        public void updateItem(NameColumnEntry item, boolean empty) {
+            super.updateItem(item, empty);
+            if (empty || item == null) {
+                setGraphic(null);
+                setText(null);
+            } else {
+                Image fxImage = item.getIcon();
+                ImageView imageView = new ImageView(fxImage);
+                setGraphic(imageView);
+                setText(item.getFileName());
+            }
+        }
     }
 }

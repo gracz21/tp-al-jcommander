@@ -4,36 +4,32 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import pl.poznan.put.fc.tpal.jcommander.Main;
 
-import java.nio.file.Path;
+import javax.swing.*;
 import java.nio.file.attribute.FileTime;
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 
 /**
  * @author Kamil Walkowiak
  */
 public class FileListEntry {
-    private StringProperty fileName;
+    private NameColumnEntry nameColumnEntry;
     private StringProperty fileSize;
-    private StringProperty formatedFileDateOfCreation;
+    private StringProperty formattedFileDateOfCreation;
     private FileTime fileDateOfCreation;
     private String fullFilePath;
 
-    public FileListEntry(String fileName, String fileSize, FileTime fileDateOfCreation, String fullFilePath) {
-        this.fileName = new SimpleStringProperty(fileName);
+
+    public FileListEntry(String fileName, String fileSize, FileTime fileDateOfCreation, String fullFilePath, Icon swingIcon) {
+        this.nameColumnEntry = new NameColumnEntry(fileName, swingIcon);
         this.fileSize = new SimpleStringProperty(fileSize);
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT, Main.getLocale());
-        this.formatedFileDateOfCreation = new SimpleStringProperty(df.format(fileDateOfCreation.toMillis()));
+        this.formattedFileDateOfCreation = new SimpleStringProperty(df.format(fileDateOfCreation.toMillis()));
         this.fileDateOfCreation = fileDateOfCreation;
         this.fullFilePath = fullFilePath;
     }
 
-    public String getFileName() {
-        return fileName.get();
-    }
-
-    public StringProperty fileNameProperty() {
-        return fileName;
+    public NameColumnEntry getNameColumnEntry() {
+        return nameColumnEntry;
     }
 
     public String getFileSize() {
@@ -44,12 +40,12 @@ public class FileListEntry {
         return fileSize;
     }
 
-    public String getFormatedFileDateOfCreation() {
-        return formatedFileDateOfCreation.get();
+    public String getFormattedFileDateOfCreation() {
+        return formattedFileDateOfCreation.get();
     }
 
-    public StringProperty formatedFileDateOfCreationProperty() {
-        return formatedFileDateOfCreation;
+    public StringProperty formattedFileDateOfCreationProperty() {
+        return formattedFileDateOfCreation;
     }
 
     public FileTime getFileDateOfCreation() {
