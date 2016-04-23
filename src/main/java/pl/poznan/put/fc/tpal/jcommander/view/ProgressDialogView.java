@@ -1,6 +1,5 @@
 package pl.poznan.put.fc.tpal.jcommander.view;
 
-import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -18,8 +17,9 @@ import java.util.ResourceBundle;
  */
 public class ProgressDialogView {
     private Stage stage;
+    private ProgressDialogController controller;
 
-    public ProgressDialogView(Task<Void> task) throws IOException {
+    public ProgressDialogView() throws IOException {
         ResourceBundle bundle = BundleUtil.getInstance().getBundle();
 
         stage = new Stage();
@@ -32,13 +32,20 @@ public class ProgressDialogView {
         loader.setResources(bundle);
         Parent root = loader.load();
 
-        ((ProgressDialogController) loader.getController()).setTask(task);
+        controller =  loader.getController();
 
         stage.setScene(new Scene(root));
+    }
+
+    public void show() {
         stage.show();
     }
 
     public void close() {
         stage.close();
+    }
+
+    public ProgressDialogController getController() {
+        return controller;
     }
 }

@@ -1,8 +1,6 @@
 package pl.poznan.put.fc.tpal.jcommander.controller;
 
 import javafx.beans.property.*;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -162,8 +160,11 @@ public class SingleTabController {
                 }
             };
 
-            ProgressDialogView progressDialog = new ProgressDialogView(deleteTask);
+            ProgressDialogView progressDialog = new ProgressDialogView();
+            progressDialog.getController().setTask(deleteTask);
             deleteTask.setOnCancelled(event -> isCanceledProperty.set(true));
+            deleteTask.setOnScheduled(event -> progressDialog.close());
+            progressDialog.show();
             new Thread(deleteTask).start();
         }
     }

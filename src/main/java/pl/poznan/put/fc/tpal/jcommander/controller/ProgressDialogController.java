@@ -1,6 +1,7 @@
 package pl.poznan.put.fc.tpal.jcommander.controller;
 
 import javafx.concurrent.Task;
+import javafx.concurrent.Worker;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressBar;
@@ -16,13 +17,13 @@ public class ProgressDialogController {
     @FXML
     private Button cancelButton;
 
-    @FXML
-    private void initialize() {
-        cancelButton.setOnAction(event -> task.cancel());
-    }
-
     public void setTask(Task<Void> task) {
         this.task = task;
         progressBar.progressProperty().bind(task.progressProperty());
+        cancelButton.setOnAction(event -> {
+            if(task.getState() != Worker.State.CANCELLED) {
+                task.cancel();
+            }
+        });
     }
 }
