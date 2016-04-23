@@ -7,8 +7,6 @@ import pl.poznan.put.fc.tpal.jcommander.controller.SingleTabController;
 import pl.poznan.put.fc.tpal.jcommander.util.BundleUtil;
 
 import java.io.IOException;
-import java.util.Observable;
-import java.util.Observer;
 
 /**
  * @author Kamil Walkowiak
@@ -19,7 +17,7 @@ public class SingleTabView {
     private FXMLLoader loader;
 
     public SingleTabView() throws IOException {
-        loader = new FXMLLoader(getClass().getResource("../../../../../../../resources/SingleTabLayout.fxml"));
+        loader = new FXMLLoader(getClass().getResource("/SingleTabLayout.fxml"));
         loader.setResources(BundleUtil.getInstance().getBundle());
         layout = (VBox) loader.load();
 

@@ -18,7 +18,7 @@ public class Main extends Application implements Observer {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        loader = new FXMLLoader(getClass().getResource("../../../../../../resources/RootLayout.fxml"));
+        loader = new FXMLLoader(getClass().getResource("/RootLayout.fxml"));
         loader.setResources(BundleUtil.getInstance().getBundle());
         Parent root = loader.load();
 
