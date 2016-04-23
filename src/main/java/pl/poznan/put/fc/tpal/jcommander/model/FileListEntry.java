@@ -6,6 +6,7 @@ import pl.poznan.put.fc.tpal.jcommander.Main;
 import pl.poznan.put.fc.tpal.jcommander.util.BundleUtil;
 
 import javax.swing.*;
+import java.io.File;
 import java.nio.file.attribute.FileTime;
 import java.text.DateFormat;
 
@@ -17,16 +18,16 @@ public class FileListEntry {
     private StringProperty fileSize;
     private StringProperty formattedFileDateOfCreation;
     private FileTime fileDateOfCreation;
-    private String fullFilePath;
+    private File file;
 
 
-    public FileListEntry(String fileName, String fileSize, FileTime fileDateOfCreation, String fullFilePath, Icon swingIcon) {
+    public FileListEntry(String fileName, String fileSize, FileTime fileDateOfCreation, File file, Icon swingIcon) {
         this.nameColumnEntry = new NameColumnEntry(fileName, swingIcon);
         this.fileSize = new SimpleStringProperty(fileSize);
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT, BundleUtil.getInstance().getLocale());
         this.formattedFileDateOfCreation = new SimpleStringProperty(df.format(fileDateOfCreation.toMillis()));
         this.fileDateOfCreation = fileDateOfCreation;
-        this.fullFilePath = fullFilePath;
+        this.file = file;
     }
 
     public NameColumnEntry getNameColumnEntry() {
@@ -53,7 +54,7 @@ public class FileListEntry {
         return fileDateOfCreation;
     }
 
-    public String getFullFilePath() {
-        return fullFilePath;
+    public File getFile() {
+        return file;
     }
 }
