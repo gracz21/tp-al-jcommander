@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.List;
 
 /**
  * @author Kamil Walkowiak
@@ -49,8 +50,15 @@ public abstract class FileOperationsUtil {
         return fileListEntries;
     }
 
-    public static void deletePathContent(String path) {
-
+    public static void deletePathContent(List<String> paths) {
+        for(String path: paths) {
+            File file = new File(path);
+            if(file.isDirectory()) {
+                deleteDirectory(file);
+            } else {
+                file.delete();
+            }
+        }
     }
 
     private static void getDirectoryContent(File[] files, ObservableList<FileListEntry> fileListEntries) throws IOException {
@@ -69,5 +77,19 @@ public abstract class FileOperationsUtil {
 
     private static void getFileContent(File file) throws IOException {
         Desktop.getDesktop().open(file);
+    }
+
+    private static void deleteDirectory(File directory) {
+        File[] directoryContent = directory.listFiles();
+        if(directoryContent != null) {
+            for(File file : directoryContent) {
+                if(file.isDirectory()) {
+                    deleteDirectory(file);
+                } else {
+                    file.delete();
+                }
+            }
+        }
+        directory.delete();
     }
 }

@@ -12,11 +12,17 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import pl.poznan.put.fc.tpal.jcommander.model.FileListEntry;
 import pl.poznan.put.fc.tpal.jcommander.model.NameColumnEntry;
+import pl.poznan.put.fc.tpal.jcommander.util.BundleUtil;
 import pl.poznan.put.fc.tpal.jcommander.util.FileOperationsUtil;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.ResourceBundle;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 /**
  * @author Kamil Walkowiak
@@ -24,6 +30,8 @@ import java.util.Arrays;
 public class SingleTabController {
     private String currentPath;
     private StringProperty currentDirectory;
+
+
     @FXML
     private TableView<FileListEntry> fileList;
     @FXML
@@ -60,7 +68,7 @@ public class SingleTabController {
     }
 
     private void initializeColumns() {
-        nameColumn.setCellValueFactory(new PropertyValueFactory("nameColumnEntry"));
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("nameColumnEntry"));
         nameColumn.setCellFactory(param -> new NameColumnEntryCell());
         sizeColumn.setCellValueFactory(cellData -> cellData.getValue().fileSizeProperty());
         dateColumn.setCellValueFactory(cellData -> cellData.getValue().formattedFileDateOfCreationProperty());
@@ -88,7 +96,7 @@ public class SingleTabController {
                 }
             }
             if(event.getCode() == KeyCode.DELETE) {
-
+                handleDeleteAction();
             }
         });
     }
@@ -118,6 +126,33 @@ public class SingleTabController {
         currentPath = path;
         currentDirectory.set(fileName);
         FileOperationsUtil.listPathContent(fileList.getItems(), path);
+    }
+
+    private void handleDeleteAction() {
+        ResourceBundle bundle = BundleUtil.getInstance().getBundle();
+
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle(bundle.getString("warningTitle"));
+        alert.setHeaderText(bundle.getString("deleteHeader"));
+        alert.setContentText("Careful with the next step!");
+        alert.getButtonTypes().add(ButtonType.CANCEL);
+
+        Button button = (Button) alert.getDialogPane().lookupButton(ButtonType.OK);
+        button.setDefaultButton(false);
+        button.setText(bundle.getString("deleteOption"));
+
+        button = (Button) alert.getDialogPane().lookupButton(ButtonType.CANCEL);
+        button.setDefaultButton(true);
+        button.setText(bundle.getString("cancelOption"));
+
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if(result.get() == ButtonType.OK) {
+            ObservableList<FileListEntry> fileListEntries = fileList.getSelectionModel().getSelectedItems();
+            List<String> pathsToDelete = fileListEntries.stream().
+                    map(FileListEntry::getFullFilePath).collect(Collectors.toList());
+            FileOperationsUtil.deletePathContent(pathsToDelete);
+        }
     }
 
     private static class NameColumnEntryCell extends TableCell<FileListEntry, NameColumnEntry> {
