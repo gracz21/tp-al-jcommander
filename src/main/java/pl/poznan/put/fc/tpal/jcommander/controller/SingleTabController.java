@@ -106,20 +106,24 @@ public class SingleTabController {
         Arrays.stream(File.listRoots()).forEach(file -> rootsList.add(file.toString()));
         rootsComboBox.setItems(rootsList);
         rootsComboBox.setValue(rootsList.get(0));
+        setSizeLabel(rootsList.get(0));
 
         rootsComboBox.setOnAction(event -> {
             String root = rootsComboBox.getSelectionModel().getSelectedItem();
             try {
                 handleChangePath(root, root);
-                //TODO
-                //setSizeLabel();
+                setSizeLabel(root);
             } catch(IOException e) {
                 e.printStackTrace();
             }
         });
     }
 
-    private void setSizeLabel() {
+    private void setSizeLabel(String root) {
+        ResourceBundle bundle = BundleUtil.getInstance().getBundle();
+
+        sizeLabel.setText(FileOperationsUtil.getRootFreeSpace(root) + " k " + bundle.getString("from") + " " +
+            FileOperationsUtil.getRootSpace(root) + " k " + bundle.getString("free"));
     }
 
     private void handleChangePath(String path, String fileName) throws IOException {

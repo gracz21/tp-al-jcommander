@@ -18,12 +18,12 @@ import java.util.List;
 public abstract class FileOperationsUtil {
     public static String getRootSpace(String root) {
         File rootFile = new File(root);
-        return Long.toString(rootFile.getTotalSpace());
+        return Long.toString(rootFile.getTotalSpace()/1024);
     }
 
     public static String getRootFreeSpace(String root) {
         File rootFile = new File(root);
-        return Long.toString(rootFile.getFreeSpace());
+        return Long.toString(rootFile.getFreeSpace()/1024);
     }
 
     public static ObservableList<FileListEntry> listPathContent(ObservableList<FileListEntry> fileListEntries, String path) throws IOException {
