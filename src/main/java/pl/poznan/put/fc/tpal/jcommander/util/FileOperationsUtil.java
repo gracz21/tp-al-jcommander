@@ -67,9 +67,4 @@ public abstract class FileOperationsUtil {
 
         return fileListEntries;
     }
-
-    private static void getFileContent(File file) throws IOException {
-        Desktop.getDesktop().open(file);
-    }
-
 }

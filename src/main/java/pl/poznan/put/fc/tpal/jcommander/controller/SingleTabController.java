@@ -104,6 +104,9 @@ public class SingleTabController {
                 }
             }
         });
+
+        fileList.getSortOrder().add(sizeColumn);
+        fileList.sort();
     }
 
     private void initializeRootsComboBoxes() {
@@ -135,6 +138,7 @@ public class SingleTabController {
         currentPath = path;
         currentDirectory.set(fileName);
         FileOperationsUtil.listPathContent(fileList.getItems(), path);
+        fileList.sort();
     }
 
     private void handleDeleteAction() throws IOException {
