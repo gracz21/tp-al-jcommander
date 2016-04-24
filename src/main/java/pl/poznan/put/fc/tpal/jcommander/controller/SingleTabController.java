@@ -12,6 +12,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import pl.poznan.put.fc.tpal.jcommander.fileOperation.CopyFiles;
 import pl.poznan.put.fc.tpal.jcommander.fileOperation.DeleteFiles;
+import pl.poznan.put.fc.tpal.jcommander.fileOperation.FilesOperation;
 import pl.poznan.put.fc.tpal.jcommander.fileOperation.MoveFiles;
 import pl.poznan.put.fc.tpal.jcommander.model.FileListEntry;
 import pl.poznan.put.fc.tpal.jcommander.model.NameColumnEntry;
@@ -33,7 +34,8 @@ public class SingleTabController {
     private String currentPath;
     private StringProperty currentDirectory;
     private StringProperty parentPath;
-    private boolean canBeDroped;
+    private boolean canBeDropped;
+    private boolean copy;
 
     @FXML
     private TableView<FileListEntry> fileList;
@@ -57,6 +59,7 @@ public class SingleTabController {
         currentPath = "C:\\";
         currentDirectory = new SimpleStringProperty("C:\\");
         parentPath = new SimpleStringProperty("");
+        copy = false;
 
         initializeColumns();
         initializeFileLists();
@@ -98,12 +101,15 @@ public class SingleTabController {
             if(event.isPrimaryButtonDown() && event.getClickCount() == 2) {
                 try {
                     FileListEntry fileListEntry = fileList.getSelectionModel().getSelectedItem();
-                    handleChangePath(fileListEntry.getFile());
+                    if(fileListEntry != null) {
+                        handleChangePath(fileListEntry.getFile());
+                    }
                 } catch(IOException e) {
                     e.printStackTrace();
                 }
             }
         });
+
         fileList.setOnKeyPressed(event -> {
             if(event.getCode() == KeyCode.ENTER) {
                 try {
@@ -146,22 +152,21 @@ public class SingleTabController {
     }
 
     private void setupDragAndDrop() {
-        canBeDroped = true;
+        canBeDropped = true;
 
         fileList.setOnDragDetected(event -> {
             List<FileListEntry> selected = fileList.getSelectionModel().getSelectedItems();
             if(selected.size() != 0) {
-                Dragboard db = fileList.startDragAndDrop(TransferMode.ANY);
+                Dragboard db = fileList.startDragAndDrop(TransferMode.COPY_OR_MOVE);
                 ClipboardContent content = new ClipboardContent();
                 content.putFiles(selected.stream().map(FileListEntry::getFile).collect(Collectors.toList()));
                 db.setContent(content);
-                canBeDroped = false;
                 event.consume();
             }
         });
 
         fileList.setOnDragOver(event -> {
-            if (event.getDragboard().hasFiles() && canBeDroped){
+            if (event.getGestureSource() != fileList && event.getDragboard().hasFiles() && canBeDropped){
                 event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
             }
             event.consume();
@@ -171,20 +176,25 @@ public class SingleTabController {
             Dragboard db = event.getDragboard();
             boolean success = false;
             if (event.getDragboard().hasFiles()) {
-
                 List<File> files = db.getFiles();
                 List<Path> paths = files.stream().map(File::getPath).map(Paths::get).collect(Collectors.toList());
 
                 BooleanProperty isCanceledProperty = new SimpleBooleanProperty(false);
 
+                FilesOperation filesOperation;
+                if(event.getTransferMode() == TransferMode.COPY) {
+                    filesOperation = new CopyFiles(null, isCanceledProperty, paths, Paths.get(currentPath));
+                } else {
+                    filesOperation = new MoveFiles(null, isCanceledProperty, paths, Paths.get(currentPath));
+                }
+
                 Task<Void> moveTask = new Task<Void>() {
                     @Override
                     protected Void call() throws Exception {
-                        MoveFiles moveFiles = new MoveFiles(null, isCanceledProperty, paths, Paths.get(currentPath));
 //                        moveFiles.progressProperty().addListener((observable, oldValue, newValue) -> {
 //                            updateProgress(moveFiles.getProgress(), toDeleteSize);
 //                        });
-                        moveFiles.execute();
+                        filesOperation.execute();
                         return null;
                     }
                 };
