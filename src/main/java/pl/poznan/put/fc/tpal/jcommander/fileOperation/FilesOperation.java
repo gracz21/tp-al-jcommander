@@ -3,12 +3,15 @@ package pl.poznan.put.fc.tpal.jcommander.fileOperation;
 import javafx.beans.property.*;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
 import java.util.List;
 
 /**
  * @author Kamil Walkowiak
  */
-public abstract class FilesOperation {
+public abstract class FilesOperation extends SimpleFileVisitor<Path> {
     protected ReadOnlyLongWrapper progress;
     protected List<File> files;
     protected BooleanProperty isCanceledProperty;
@@ -27,5 +30,5 @@ public abstract class FilesOperation {
         return progress;
     }
 
-    public abstract void execute();
+    public abstract void execute() throws IOException;
 }

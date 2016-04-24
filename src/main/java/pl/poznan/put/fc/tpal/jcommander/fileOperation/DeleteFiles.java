@@ -19,11 +19,13 @@ public class DeleteFiles extends FilesOperation {
             if(this.isCanceledProperty.get()) {
                 break;
             }
-            if(file.isDirectory()) {
-                this.deleteDirectory(file);
-            } else {
-                progress.set(progress.getValue() + file.length());
-                file.delete();
+            if(file.exists()) {
+                if(file.isDirectory()) {
+                    this.deleteDirectory(file);
+                } else {
+                    progress.set(progress.getValue() + file.length());
+                    file.delete();
+                }
             }
         }
     }
@@ -35,11 +37,13 @@ public class DeleteFiles extends FilesOperation {
                 if(isCanceledProperty.get()) {
                     break;
                 }
-                if(file.isDirectory()) {
-                    deleteDirectory(file);
-                } else {
-                    progress.set(progress.getValue() + file.length());
-                    file.delete();
+                if(file.exists()) {
+                    if(file.isDirectory()) {
+                        deleteDirectory(file);
+                    } else {
+                        progress.set(progress.getValue() + file.length());
+                        file.delete();
+                    }
                 }
             }
         }

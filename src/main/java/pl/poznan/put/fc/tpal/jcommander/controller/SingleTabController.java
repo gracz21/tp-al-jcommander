@@ -11,6 +11,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import pl.poznan.put.fc.tpal.jcommander.fileOperation.DeleteFiles;
+import pl.poznan.put.fc.tpal.jcommander.fileOperation.MoveFiles;
 import pl.poznan.put.fc.tpal.jcommander.model.FileListEntry;
 import pl.poznan.put.fc.tpal.jcommander.model.NameColumnEntry;
 import pl.poznan.put.fc.tpal.jcommander.util.BundleUtil;
@@ -19,10 +20,9 @@ import pl.poznan.put.fc.tpal.jcommander.view.ProgressDialogView;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -54,7 +54,7 @@ public class SingleTabController {
     private void initialize() throws IOException {
         currentPath = "C:\\";
         currentDirectory = new SimpleStringProperty("C:\\");
-        parentPath = new SimpleStringProperty();
+        parentPath = new SimpleStringProperty("");
 
         initializeColumns();
         initializeFileLists();
@@ -63,7 +63,7 @@ public class SingleTabController {
 
     @FXML
     private void handleUpButton() throws IOException {
-        if(parentPath != null) {
+        if(!parentPath.get().equals("")) {
             handleChangePath(new File(parentPath.get()));
         }
     }
@@ -71,6 +71,10 @@ public class SingleTabController {
     @FXML
     private void handleRootButton() throws IOException {
         handleChangePath(new File(rootsComboBox.getValue()));
+//        List<Path> paths = new ArrayList<>();
+//        paths.add(Paths.get("C:\\Users\\Kamil\\Desktop\\Test"));
+//        paths.add(Paths.get("C:\\Users\\Kamil\\Desktop\\Test2.txt"));
+//        (new MoveFiles(null, null, paths, Paths.get("C:\\Users\\Kamil\\Desktop\\Dest"))).execute();
     }
 
     public StringProperty currentDirectoryProperty() {
