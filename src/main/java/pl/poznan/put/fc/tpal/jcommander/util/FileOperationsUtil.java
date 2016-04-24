@@ -51,12 +51,14 @@ public abstract class FileOperationsUtil {
                 if(pathContent.getParent() != null) {
                     File parent = pathContent.getParentFile();
                     Icon icon = FileSystemView.getFileSystemView().getSystemIcon(parent);
-                    BasicFileAttributes attr = Files.readAttributes(parent.toPath(), BasicFileAttributes.class);
-                    fileListEntries.add(new FileListEntry("..", "<DIR>", attr.creationTime(), parent, icon));
+                    fileListEntries.add(new FileListEntry(parent, icon));
                 }
-                getDirectoryContent(files, fileListEntries);
+                for(File file : files) {
+                    Icon icon = FileSystemView.getFileSystemView().getSystemIcon(file);
+                    fileListEntries.add(new FileListEntry(file, icon));
+                }
             } else {
-                getFileContent(pathContent);
+                Desktop.getDesktop().open(pathContent);
             }
         } else {
             //TODO Dialog or nothing
@@ -64,20 +66,6 @@ public abstract class FileOperationsUtil {
         }
 
         return fileListEntries;
-    }
-
-    private static void getDirectoryContent(File[] files, ObservableList<FileListEntry> fileListEntries) throws IOException {
-        BasicFileAttributes attr;
-        for(File file : files) {
-            Icon icon = FileSystemView.getFileSystemView().getSystemIcon(file);
-            if(file.isFile()) {
-                attr = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
-                fileListEntries.add(new FileListEntry(file.getName(), Long.toString(file.length()), attr.creationTime(), file, icon));
-            } else {
-                attr = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
-                fileListEntries.add(new FileListEntry(file.getName(), "<DIR>", attr.creationTime(), file, icon));
-            }
-        }
     }
 
     private static void getFileContent(File file) throws IOException {
