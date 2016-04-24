@@ -10,6 +10,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import pl.poznan.put.fc.tpal.jcommander.fileOperation.CopyFiles;
 import pl.poznan.put.fc.tpal.jcommander.fileOperation.DeleteFiles;
 import pl.poznan.put.fc.tpal.jcommander.fileOperation.MoveFiles;
 import pl.poznan.put.fc.tpal.jcommander.model.FileListEntry;
@@ -74,7 +75,7 @@ public class SingleTabController {
 //        List<Path> paths = new ArrayList<>();
 //        paths.add(Paths.get("C:\\Users\\Kamil\\Desktop\\Test"));
 //        paths.add(Paths.get("C:\\Users\\Kamil\\Desktop\\Test2.txt"));
-//        (new MoveFiles(null, null, paths, Paths.get("C:\\Users\\Kamil\\Desktop\\Dest"))).execute();
+//        (new CopyFiles(null, null, paths, Paths.get("C:\\Users\\Kamil\\Desktop\\Dest"))).execute();
     }
 
     public StringProperty currentDirectoryProperty() {
