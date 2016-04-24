@@ -1,5 +1,6 @@
 package pl.poznan.put.fc.tpal.jcommander.util;
 
+import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
 import pl.poznan.put.fc.tpal.jcommander.model.FileListEntry;
 
@@ -42,16 +43,14 @@ public abstract class FileOperationsUtil {
         return result;
     }
 
-    public static ObservableList<FileListEntry> listPathContent(ObservableList<FileListEntry> fileListEntries, String path) throws IOException {
-        File pathContent = new File(path);
+    public static ObservableList<FileListEntry> listPathContent(ObservableList<FileListEntry> fileListEntries, File pathContent,
+                                                                StringProperty parentPath) throws IOException {
         if(pathContent.exists()) {
             if(pathContent.isDirectory()) {
                 File[] files = pathContent.listFiles(file -> !file.isHidden() && Files.isReadable(file.toPath()));
                 fileListEntries.clear();
                 if(pathContent.getParent() != null) {
-                    File parent = pathContent.getParentFile();
-                    Icon icon = FileSystemView.getFileSystemView().getSystemIcon(parent);
-                    fileListEntries.add(new FileListEntry(parent, icon));
+                    parentPath.set(pathContent.getParent());
                 }
                 for(File file : files) {
                     Icon icon = FileSystemView.getFileSystemView().getSystemIcon(file);

@@ -28,6 +28,7 @@ public class Main extends Application implements Observer {
 
         BundleUtil.getInstance().addObserver(this);
 
+        //primaryStage.setMaximized(true);
         primaryStage.show();
     }
 

@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 public class SingleTabController {
     private String currentPath;
     private StringProperty currentDirectory;
-
+    private StringProperty parentPath;
 
     @FXML
     private TableView<FileListEntry> fileList;
@@ -44,24 +44,33 @@ public class SingleTabController {
     @FXML
     private ComboBox<String> rootsComboBox;
     @FXML
+    private Button upButton;
+    @FXML
+    private Button rootButton;
+    @FXML
     private Label sizeLabel;
 
     @FXML
     private void initialize() throws IOException {
         currentPath = "C:\\";
         currentDirectory = new SimpleStringProperty("C:\\");
+        parentPath = new SimpleStringProperty();
 
         initializeColumns();
         initializeFileLists();
         initializeRootsComboBoxes();
     }
 
-    public String getCurrentPath() {
-        return currentPath;
+    @FXML
+    private void handleUpButton() throws IOException {
+        if(parentPath != null) {
+            handleChangePath(new File(parentPath.get()));
+        }
     }
 
-    public String getCurrentDirectory() {
-        return currentDirectory.get();
+    @FXML
+    private void handleRootButton() throws IOException {
+        handleChangePath(new File(rootsComboBox.getValue()));
     }
 
     public StringProperty currentDirectoryProperty() {
@@ -76,12 +85,13 @@ public class SingleTabController {
     }
 
     private void initializeFileLists() throws IOException {
-        fileList.setItems(FileOperationsUtil.listPathContent(FXCollections.observableArrayList(), "C:\\"));
+        fileList.setItems(FileOperationsUtil.listPathContent(FXCollections.observableArrayList(), new File(currentPath),
+                parentPath));
         fileList.setOnMousePressed(event -> {
             if(event.isPrimaryButtonDown() && event.getClickCount() == 2) {
                 try {
                     FileListEntry fileListEntry = fileList.getSelectionModel().getSelectedItem();
-                    handleChangePath(fileListEntry.getFile().getPath(), fileListEntry.getNameColumnEntry().getFileName());
+                    handleChangePath(fileListEntry.getFile());
                 } catch(IOException e) {
                     e.printStackTrace();
                 }
@@ -91,7 +101,7 @@ public class SingleTabController {
             if(event.getCode() == KeyCode.ENTER) {
                 try {
                     FileListEntry fileListEntry = fileList.getSelectionModel().getSelectedItem();
-                    handleChangePath(fileListEntry.getFile().getPath(), fileListEntry.getNameColumnEntry().getFileName());
+                    handleChangePath(fileListEntry.getFile());
                 } catch(IOException e) {
                     e.printStackTrace();
                 }
@@ -119,7 +129,7 @@ public class SingleTabController {
         rootsComboBox.setOnAction(event -> {
             String root = rootsComboBox.getSelectionModel().getSelectedItem();
             try {
-                handleChangePath(root, root);
+                handleChangePath(new File(root));
                 setSizeLabel(root);
             } catch(IOException e) {
                 e.printStackTrace();
@@ -134,10 +144,10 @@ public class SingleTabController {
             FileOperationsUtil.getRootSpace(root) + " k " + bundle.getString("free"));
     }
 
-    private void handleChangePath(String path, String fileName) throws IOException {
-        currentPath = path;
-        currentDirectory.set(fileName);
-        FileOperationsUtil.listPathContent(fileList.getItems(), path);
+    private void handleChangePath(File file) throws IOException {
+        currentPath = file.getPath();
+        currentDirectory.set(file.getName());
+        FileOperationsUtil.listPathContent(fileList.getItems(), file, parentPath);
         fileList.sort();
     }
 
@@ -182,16 +192,16 @@ public class SingleTabController {
         Alert result = new Alert(Alert.AlertType.WARNING);
         result.setTitle(bundle.getString("warningTitle"));
         result.setHeaderText(bundle.getString("deleteHeader"));
-        result.setContentText("Careful with the next step!");
+        result.setContentText(bundle.getString("deleteWarning"));
         result.getButtonTypes().add(ButtonType.CANCEL);
 
         Button button = (Button) result.getDialogPane().lookupButton(ButtonType.OK);
         button.setDefaultButton(false);
-        button.setText(bundle.getString("deleteOption"));
+        button.setText(bundle.getString("yesOption"));
 
         button = (Button) result.getDialogPane().lookupButton(ButtonType.CANCEL);
         button.setDefaultButton(true);
-        button.setText(bundle.getString("cancelOption"));
+        button.setText(bundle.getString("noOption"));
 
         return result;
     }
