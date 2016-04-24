@@ -24,7 +24,7 @@ public class FileListEntry {
     public FileListEntry(String fileName, String fileSize, FileTime fileDateOfCreation, File file, Icon swingIcon) {
         this.nameColumnEntry = new NameColumnEntry(fileName, swingIcon);
         this.fileSize = new SimpleStringProperty(fileSize);
-        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT, BundleUtil.getInstance().getLocale());
+        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT, BundleUtil.getInstance().getCurrentLocale());
         this.formattedFileDateOfCreation = new SimpleStringProperty(df.format(fileDateOfCreation.toMillis()));
         this.fileDateOfCreation = fileDateOfCreation;
         this.file = file;

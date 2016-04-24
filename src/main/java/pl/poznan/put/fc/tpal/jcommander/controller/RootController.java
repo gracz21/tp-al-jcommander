@@ -2,6 +2,7 @@ package pl.poznan.put.fc.tpal.jcommander.controller;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.BorderPane;
@@ -14,6 +15,10 @@ import java.util.ArrayList;
 public class RootController {
     @FXML
     private ArrayList<TabPane> tabPanes;
+    @FXML
+    private RadioMenuItem changeToEnglish;
+    @FXML
+    private RadioMenuItem changeToPolish;
 
     @FXML
     private void initialize() throws IOException {
@@ -37,6 +42,12 @@ public class RootController {
                 event.consume();
             });
         }
+
+        if(BundleUtil.getInstance().getCurrentLocale().getLanguage().equals("en")) {
+            changeToEnglish.setSelected(true);
+        } else {
+            changeToPolish.setSelected(true);
+        }
     }
 
     @FXML
@@ -46,12 +57,18 @@ public class RootController {
 
     @FXML
     private void handleMenuToEnglish() {
-        BundleUtil.getInstance().setLocale("en");
+        BundleUtil bundleUtil = BundleUtil.getInstance();
+        if(!bundleUtil.getCurrentLocale().getLanguage().equals("en")) {
+            BundleUtil.getInstance().setCurrentLocale("en");
+        }
     }
 
     @FXML
     private void handleMenuToPolish() {
-        BundleUtil.getInstance().setLocale("pl");
+        BundleUtil bundleUtil = BundleUtil.getInstance();
+        if(!bundleUtil.getCurrentLocale().getLanguage().equals("pl")) {
+            BundleUtil.getInstance().setCurrentLocale("pl");
+        }
     }
 
     private Tab createTab() {

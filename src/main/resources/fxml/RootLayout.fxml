@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.VBox?>
 
 <?import java.util.ArrayList?>
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.poznan.put.fc.tpal.jcommander.controller.RootController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.poznan.put.fc.tpal.jcommander.controller.RootController">
     <VBox prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <MenuBar prefWidth="600.0">
             <Menu mnemonicParsing="false" text="%menu.file">
@@ -27,12 +27,12 @@
             </Menu>
          <Menu mnemonicParsing="false" text="%menu.changeLanguage">
             <items>
-               <RadioMenuItem mnemonicParsing="false" onAction="#handleMenuToEnglish" text="English">
+               <RadioMenuItem fx:id="changeToEnglish" mnemonicParsing="false" onAction="#handleMenuToEnglish" text="English">
                   <toggleGroup>
                      <ToggleGroup fx:id="language" />
                   </toggleGroup>
                </RadioMenuItem>
-               <RadioMenuItem mnemonicParsing="false" onAction="#handleMenuToPolish" selected="true" text="Polski" toggleGroup="$language" />
+               <RadioMenuItem fx:id="changeToPolish" mnemonicParsing="false" onAction="#handleMenuToPolish" selected="true" text="Polski" toggleGroup="$language" />
             </items>
          </Menu>
             <Menu mnemonicParsing="false" text="%menu.help">
