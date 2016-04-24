@@ -5,23 +5,21 @@ import javafx.concurrent.Worker;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressBar;
+import javafx.stage.Stage;
 
 /**
  * @author Kamil Walkowiak
  */
 public class ProgressDialogController {
-    private Task<Void> task;
-
     @FXML
     private ProgressBar progressBar;
     @FXML
     private Button cancelButton;
 
     public void setTask(Task<Void> task) {
-        this.task = task;
         progressBar.progressProperty().bind(task.progressProperty());
         cancelButton.setOnAction(event -> {
-            if(task.getState() != Worker.State.CANCELLED) {
+            if(task.getState() == Worker.State.RUNNING) {
                 task.cancel();
             }
         });

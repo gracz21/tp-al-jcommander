@@ -1,5 +1,6 @@
 package pl.poznan.put.fc.tpal.jcommander.view;
 
+import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -45,7 +46,8 @@ public class ProgressDialogView {
         stage.close();
     }
 
-    public ProgressDialogController getController() {
-        return controller;
+    public void setTask(Task<Void> task) {
+        stage.setOnCloseRequest(event -> task.cancel());
+        controller.setTask(task);
     }
 }

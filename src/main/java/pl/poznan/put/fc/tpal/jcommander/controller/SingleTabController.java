@@ -161,9 +161,12 @@ public class SingleTabController {
             };
 
             ProgressDialogView progressDialog = new ProgressDialogView();
-            progressDialog.getController().setTask(deleteTask);
-            deleteTask.setOnCancelled(event -> isCanceledProperty.set(true));
-            deleteTask.setOnScheduled(event -> progressDialog.close());
+            progressDialog.setTask(deleteTask);
+            deleteTask.setOnCancelled(event -> {
+                isCanceledProperty.set(true);
+                progressDialog.close();
+            });
+            deleteTask.setOnSucceeded(event -> progressDialog.close());
             progressDialog.show();
             new Thread(deleteTask).start();
         }
