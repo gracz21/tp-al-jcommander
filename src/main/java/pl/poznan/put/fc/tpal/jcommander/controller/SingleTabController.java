@@ -9,7 +9,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
+import javafx.scene.input.*;
 import pl.poznan.put.fc.tpal.jcommander.fileOperation.CopyFiles;
 import pl.poznan.put.fc.tpal.jcommander.fileOperation.DeleteFiles;
 import pl.poznan.put.fc.tpal.jcommander.fileOperation.MoveFiles;
@@ -33,6 +33,7 @@ public class SingleTabController {
     private String currentPath;
     private StringProperty currentDirectory;
     private StringProperty parentPath;
+    private boolean canBeDroped;
 
     @FXML
     private TableView<FileListEntry> fileList;
@@ -60,6 +61,7 @@ public class SingleTabController {
         initializeColumns();
         initializeFileLists();
         initializeRootsComboBoxes();
+        setupDragAndDrop();
     }
 
     @FXML
@@ -120,6 +122,7 @@ public class SingleTabController {
             }
         });
 
+        fileList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         fileList.getSortOrder().add(sizeColumn);
         fileList.sort();
     }
@@ -139,6 +142,72 @@ public class SingleTabController {
             } catch(IOException e) {
                 e.printStackTrace();
             }
+        });
+    }
+
+    private void setupDragAndDrop() {
+        canBeDroped = true;
+
+        fileList.setOnDragDetected(event -> {
+            List<FileListEntry> selected = fileList.getSelectionModel().getSelectedItems();
+            if(selected.size() != 0) {
+                Dragboard db = fileList.startDragAndDrop(TransferMode.ANY);
+                ClipboardContent content = new ClipboardContent();
+                content.putFiles(selected.stream().map(FileListEntry::getFile).collect(Collectors.toList()));
+                db.setContent(content);
+                canBeDroped = false;
+                event.consume();
+            }
+        });
+
+        fileList.setOnDragOver(event -> {
+            if (event.getDragboard().hasFiles() && canBeDroped){
+                event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+            }
+            event.consume();
+        });
+
+        fileList.setOnDragDropped(event -> {
+            Dragboard db = event.getDragboard();
+            boolean success = false;
+            if (event.getDragboard().hasFiles()) {
+
+                List<File> files = db.getFiles();
+                List<Path> paths = files.stream().map(File::getPath).map(Paths::get).collect(Collectors.toList());
+
+                BooleanProperty isCanceledProperty = new SimpleBooleanProperty(false);
+
+                Task<Void> moveTask = new Task<Void>() {
+                    @Override
+                    protected Void call() throws Exception {
+                        MoveFiles moveFiles = new MoveFiles(null, isCanceledProperty, paths, Paths.get(currentPath));
+//                        moveFiles.progressProperty().addListener((observable, oldValue, newValue) -> {
+//                            updateProgress(moveFiles.getProgress(), toDeleteSize);
+//                        });
+                        moveFiles.execute();
+                        return null;
+                    }
+                };
+
+                ProgressDialogView progressDialog = null;
+                try {
+                    progressDialog = new ProgressDialogView();
+                } catch(IOException e) {
+                    e.printStackTrace();
+                }
+                progressDialog.setTask(moveTask);
+                ProgressDialogView finalProgressDialog = progressDialog;
+                moveTask.setOnCancelled(event2 -> {
+                    isCanceledProperty.set(true);
+                    finalProgressDialog.close();
+                });
+                moveTask.setOnSucceeded(event2 -> finalProgressDialog.close());
+                progressDialog.show();
+                new Thread(moveTask).start();
+                success = true;
+            }
+            event.setDropCompleted(success);
+            event.consume();
         });
     }
 
