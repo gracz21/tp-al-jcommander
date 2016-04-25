@@ -11,12 +11,12 @@ import java.util.List;
 /**
  * @author Kamil Walkowiak
  */
-public abstract class FilesOperation extends SimpleFileVisitor<Path> {
+public abstract class FileOperation extends SimpleFileVisitor<Path> {
     protected ReadOnlyLongWrapper progress;
     protected List<File> files;
     protected BooleanProperty isCanceledProperty;
 
-    public FilesOperation(List<File> files, BooleanProperty isCanceledProperty) {
+    public FileOperation(List<File> files, BooleanProperty isCanceledProperty) {
         this.files = files;
         this.isCanceledProperty = isCanceledProperty;
         this.progress = new ReadOnlyLongWrapper(this, "progress");

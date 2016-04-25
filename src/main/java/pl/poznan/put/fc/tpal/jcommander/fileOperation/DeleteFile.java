@@ -8,8 +8,8 @@ import java.util.List;
 /**
  * @author Kamil Walkowiak
  */
-public class DeleteFiles extends FilesOperation {
-    public DeleteFiles(List<File> files, BooleanProperty isCanceledProperty) {
+public class DeleteFile extends FileOperation {
+    public DeleteFile(List<File> files, BooleanProperty isCanceledProperty) {
         super(files, isCanceledProperty);
     }
 

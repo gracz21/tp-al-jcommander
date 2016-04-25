@@ -9,17 +9,18 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.List;
 
 import static java.nio.file.FileVisitResult.CONTINUE;
+import static java.nio.file.FileVisitResult.TERMINATE;
 
 /**
  * @author Kamil Walkowiak
  */
-public class CopyFiles extends FilesOperation {
+public class CopyFile extends FileOperation {
     private List<Path> sourcePaths;
     private Path targetPath;
     private Path currentSourcePath;
     private Path currentTargetPath;
 
-    public CopyFiles(List<File> files, BooleanProperty isCanceledProperty, List<Path> sourcePaths, Path targetPath) {
+    public CopyFile(List<File> files, BooleanProperty isCanceledProperty, List<Path> sourcePaths, Path targetPath) {
         super(files, isCanceledProperty);
         this.sourcePaths = sourcePaths;
         this.targetPath = targetPath;
@@ -28,6 +29,9 @@ public class CopyFiles extends FilesOperation {
     @Override
     public void execute() throws IOException {
         for(Path path: sourcePaths) {
+            if(isCanceledProperty.get()) {
+                break;
+            }
             currentSourcePath = path;
             currentTargetPath = Paths.get(targetPath.toString(), currentSourcePath.getFileName().toString());
             Files.walkFileTree(path, this);
@@ -36,19 +40,28 @@ public class CopyFiles extends FilesOperation {
 
     @Override
     public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-        Path targetDir = currentTargetPath.resolve(currentSourcePath.relativize(dir));
-        try {
-            Files.copy(dir, targetDir);
-        } catch (FileAlreadyExistsException e) {
-            if (!Files.isDirectory(targetDir))
-                throw e;
+        if(!isCanceledProperty.get()) {
+            Path targetDir = currentTargetPath.resolve(currentSourcePath.relativize(dir));
+            try {
+                Files.copy(dir, targetDir);
+            } catch(FileAlreadyExistsException e) {
+                if(!Files.isDirectory(targetDir))
+                    throw e;
+            }
+            return CONTINUE;
+        } else {
+            return TERMINATE;
         }
-        return CONTINUE;
     }
 
     @Override
     public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-        Files.copy(file, currentTargetPath.resolve(currentSourcePath.relativize(file)));
-        return CONTINUE;
+        if(!isCanceledProperty.get()) {
+            Files.copy(file, currentTargetPath.resolve(currentSourcePath.relativize(file)));
+            progress.set(progress.getValue() + Files.size(file));
+            return CONTINUE;
+        } else {
+            return TERMINATE;
+        }
     }
 }

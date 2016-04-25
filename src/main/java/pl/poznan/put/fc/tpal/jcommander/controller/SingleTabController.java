@@ -3,22 +3,21 @@ package pl.poznan.put.fc.tpal.jcommander.controller;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
-import pl.poznan.put.fc.tpal.jcommander.fileOperation.CopyFiles;
-import pl.poznan.put.fc.tpal.jcommander.fileOperation.DeleteFiles;
-import pl.poznan.put.fc.tpal.jcommander.fileOperation.FilesOperation;
-import pl.poznan.put.fc.tpal.jcommander.fileOperation.MoveFiles;
+import pl.poznan.put.fc.tpal.jcommander.FileOperationTask;
+import pl.poznan.put.fc.tpal.jcommander.fileOperation.CopyFile;
+import pl.poznan.put.fc.tpal.jcommander.fileOperation.DeleteFile;
+import pl.poznan.put.fc.tpal.jcommander.fileOperation.FileOperation;
+import pl.poznan.put.fc.tpal.jcommander.fileOperation.MoveFile;
 import pl.poznan.put.fc.tpal.jcommander.model.FileListEntry;
 import pl.poznan.put.fc.tpal.jcommander.model.NameColumnEntry;
 import pl.poznan.put.fc.tpal.jcommander.util.BundleUtil;
 import pl.poznan.put.fc.tpal.jcommander.util.FileOperationsUtil;
-import pl.poznan.put.fc.tpal.jcommander.view.ProgressDialogView;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,7 +34,6 @@ public class SingleTabController {
     private StringProperty currentDirectory;
     private StringProperty parentPath;
     private boolean canBeDropped;
-    private boolean copy;
 
     @FXML
     private TableView<FileListEntry> fileList;
@@ -59,7 +57,6 @@ public class SingleTabController {
         currentPath = "C:\\";
         currentDirectory = new SimpleStringProperty("C:\\");
         parentPath = new SimpleStringProperty("");
-        copy = false;
 
         initializeColumns();
         initializeFileLists();
@@ -77,10 +74,6 @@ public class SingleTabController {
     @FXML
     private void handleRootButton() throws IOException {
         handleChangePath(new File(rootsComboBox.getValue()));
-//        List<Path> paths = new ArrayList<>();
-//        paths.add(Paths.get("C:\\Users\\Kamil\\Desktop\\Test"));
-//        paths.add(Paths.get("C:\\Users\\Kamil\\Desktop\\Test2.txt"));
-//        (new CopyFiles(null, null, paths, Paths.get("C:\\Users\\Kamil\\Desktop\\Dest"))).execute();
     }
 
     public StringProperty currentDirectoryProperty() {
@@ -114,14 +107,18 @@ public class SingleTabController {
             if(event.getCode() == KeyCode.ENTER) {
                 try {
                     FileListEntry fileListEntry = fileList.getSelectionModel().getSelectedItem();
-                    handleChangePath(fileListEntry.getFile());
+                    if(fileListEntry != null) {
+                        handleChangePath(fileListEntry.getFile());
+                    }
                 } catch(IOException e) {
                     e.printStackTrace();
                 }
             }
             if(event.getCode() == KeyCode.DELETE) {
                 try {
-                    handleDeleteAction();
+                    if(fileList.getSelectionModel().getSelectedCells().size() != 0) {
+                        handleDeleteAction();
+                    }
                 } catch(IOException e) {
                     e.printStackTrace();
                 }
@@ -181,39 +178,18 @@ public class SingleTabController {
 
                 BooleanProperty isCanceledProperty = new SimpleBooleanProperty(false);
 
-                FilesOperation filesOperation;
+                FileOperation fileOperation;
                 if(event.getTransferMode() == TransferMode.COPY) {
-                    filesOperation = new CopyFiles(null, isCanceledProperty, paths, Paths.get(currentPath));
+                    fileOperation = new CopyFile(null, isCanceledProperty, paths, Paths.get(currentPath));
                 } else {
-                    filesOperation = new MoveFiles(null, isCanceledProperty, paths, Paths.get(currentPath));
+                    fileOperation = new MoveFile(null, isCanceledProperty, paths, Paths.get(currentPath));
                 }
 
-                Task<Void> moveTask = new Task<Void>() {
-                    @Override
-                    protected Void call() throws Exception {
-//                        moveFiles.progressProperty().addListener((observable, oldValue, newValue) -> {
-//                            updateProgress(moveFiles.getProgress(), toDeleteSize);
-//                        });
-                        filesOperation.execute();
-                        return null;
-                    }
-                };
-
-                ProgressDialogView progressDialog = null;
                 try {
-                    progressDialog = new ProgressDialogView();
+                    new Thread(new FileOperationTask(fileOperation, files, isCanceledProperty)).start();
                 } catch(IOException e) {
                     e.printStackTrace();
                 }
-                progressDialog.setTask(moveTask);
-                ProgressDialogView finalProgressDialog = progressDialog;
-                moveTask.setOnCancelled(event2 -> {
-                    isCanceledProperty.set(true);
-                    finalProgressDialog.close();
-                });
-                moveTask.setOnSucceeded(event2 -> finalProgressDialog.close());
-                progressDialog.show();
-                new Thread(moveTask).start();
                 success = true;
             }
             event.setDropCompleted(success);
@@ -243,30 +219,10 @@ public class SingleTabController {
             ObservableList<FileListEntry> fileListEntries = fileList.getSelectionModel().getSelectedItems();
             List<File> filesToDelete = fileListEntries.stream().
                     map(FileListEntry::getFile).collect(Collectors.toList());
-            long toDeleteSize = FileOperationsUtil.getFileListSize(filesToDelete);
 
             BooleanProperty isCanceledProperty = new SimpleBooleanProperty(false);
-            Task<Void> deleteTask = new Task<Void>() {
-                @Override
-                protected Void call() throws Exception {
-                    DeleteFiles deleteFiles = new DeleteFiles(filesToDelete, isCanceledProperty);
-                    deleteFiles.progressProperty().addListener((observable, oldValue, newValue) -> {
-                        updateProgress(deleteFiles.getProgress(), toDeleteSize);
-                    });
-                    deleteFiles.execute();
-                    return null;
-                }
-            };
-
-            ProgressDialogView progressDialog = new ProgressDialogView();
-            progressDialog.setTask(deleteTask);
-            deleteTask.setOnCancelled(event -> {
-                isCanceledProperty.set(true);
-                progressDialog.close();
-            });
-            deleteTask.setOnSucceeded(event -> progressDialog.close());
-            progressDialog.show();
-            new Thread(deleteTask).start();
+            DeleteFile deleteFiles = new DeleteFile(filesToDelete, isCanceledProperty);
+            new Thread(new FileOperationTask(deleteFiles, filesToDelete, isCanceledProperty)).start();
         }
     }
 
