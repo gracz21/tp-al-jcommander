@@ -12,23 +12,23 @@ import java.util.List;
  * @author Kamil Walkowiak
  */
 public abstract class FileOperation extends SimpleFileVisitor<Path> {
-    protected ReadOnlyLongWrapper progress;
+    ReadOnlyLongWrapper progress;
     protected List<File> files;
-    protected BooleanProperty isCanceledProperty;
+    BooleanProperty isCanceledProperty;
 
-    public FileOperation(List<File> files, BooleanProperty isCanceledProperty) {
+    FileOperation(List<File> files, BooleanProperty isCanceledProperty) {
         this.files = files;
         this.isCanceledProperty = isCanceledProperty;
         this.progress = new ReadOnlyLongWrapper(this, "progress");
     }
 
-    public long getProgress() {
+    long getProgress() {
         return progress.get();
     }
 
-    public ReadOnlyLongWrapper progressProperty() {
+    ReadOnlyLongWrapper progressProperty() {
         return progress;
     }
 
-    public abstract void execute() throws IOException;
+    abstract void execute() throws IOException;
 }

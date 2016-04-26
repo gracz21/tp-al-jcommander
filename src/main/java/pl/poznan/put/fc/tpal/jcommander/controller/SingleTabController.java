@@ -9,7 +9,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
-import pl.poznan.put.fc.tpal.jcommander.FileOperationTask;
+import pl.poznan.put.fc.tpal.jcommander.fileOperation.FileOperationTask;
 import pl.poznan.put.fc.tpal.jcommander.fileOperation.CopyFile;
 import pl.poznan.put.fc.tpal.jcommander.fileOperation.DeleteFile;
 import pl.poznan.put.fc.tpal.jcommander.fileOperation.FileOperation;

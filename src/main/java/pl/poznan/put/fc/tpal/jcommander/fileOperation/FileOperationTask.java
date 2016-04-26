@@ -1,8 +1,7 @@
-package pl.poznan.put.fc.tpal.jcommander;
+package pl.poznan.put.fc.tpal.jcommander.fileOperation;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.concurrent.Task;
-import pl.poznan.put.fc.tpal.jcommander.fileOperation.FileOperation;
 import pl.poznan.put.fc.tpal.jcommander.util.FileOperationsUtil;
 import pl.poznan.put.fc.tpal.jcommander.view.ProgressDialogView;
 
