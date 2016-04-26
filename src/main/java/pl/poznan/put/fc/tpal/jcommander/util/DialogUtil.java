@@ -11,7 +11,7 @@ import java.util.ResourceBundle;
  */
 public abstract class DialogUtil {
     public static ReplaceOptionsUtil.replaceOptions replaceDialog() {
-        final ReplaceOptionsUtil.replaceOptions[] result = new ReplaceOptionsUtil.replaceOptions[1];
+        final ReplaceOptionsUtil.replaceOptions result;
         ResourceBundle bundle = BundleUtil.getInstance().getBundle();
 
         Alert dialog = new Alert(Alert.AlertType.CONFIRMATION);
@@ -29,18 +29,18 @@ public abstract class DialogUtil {
 
         if(selectedOption.isPresent()) {
             if(selectedOption.get() == buttonYes) {
-                result[0] = ReplaceOptionsUtil.replaceOptions.YES;
+                result = ReplaceOptionsUtil.replaceOptions.YES;
             } else if(selectedOption.get() == buttonNo) {
-                result[0] = ReplaceOptionsUtil.replaceOptions.NO;
+                result = ReplaceOptionsUtil.replaceOptions.NO;
             } else if(selectedOption.get() == buttonYesAll) {
-                result[0] = ReplaceOptionsUtil.replaceOptions.YES_ALL;
+                result = ReplaceOptionsUtil.replaceOptions.YES_ALL;
             } else {
-                result[0] = ReplaceOptionsUtil.replaceOptions.NO_ALL;
+                result = ReplaceOptionsUtil.replaceOptions.NO_ALL;
             }
         } else {
-            result[0] = ReplaceOptionsUtil.replaceOptions.NO;
+            result = ReplaceOptionsUtil.replaceOptions.NO;
         }
 
-        return result[0];
+        return result;
     }
 }

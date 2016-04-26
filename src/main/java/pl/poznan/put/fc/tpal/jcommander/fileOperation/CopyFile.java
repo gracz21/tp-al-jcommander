@@ -47,6 +47,7 @@ public class CopyFile extends FileOperation {
 
     @Override
     public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+        //TODO
         if(!isCanceledProperty.get()) {
             Path targetDir = currentTargetPath.resolve(currentSourcePath.relativize(dir));
             try {
@@ -67,7 +68,6 @@ public class CopyFile extends FileOperation {
             Path targetPath = currentTargetPath.resolve(currentSourcePath.relativize(file).toString());
             if(!Files.exists(targetPath)) {
                 Files.copy(file, targetPath);
-                progress.set(progress.getValue() + Files.size(file));
             } else {
                 if(replaceAll == null) {
                     FutureTask<ReplaceOptionsUtil.replaceOptions> dialog = new FutureTask<>(DialogUtil::replaceDialog);
@@ -94,12 +94,10 @@ public class CopyFile extends FileOperation {
                 } else {
                     if(replaceAll) {
                         Files.copy(file, targetPath, REPLACE_EXISTING);
-                        progress.set(progress.getValue() + Files.size(file));
-                    } else {
-                        return CONTINUE;
                     }
                 }
             }
+            progress.set(progress.getValue() + Files.size(file));
             return CONTINUE;
         } else {
             return TERMINATE;
