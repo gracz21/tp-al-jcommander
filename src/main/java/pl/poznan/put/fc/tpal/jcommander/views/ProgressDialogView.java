@@ -1,4 +1,4 @@
-package pl.poznan.put.fc.tpal.jcommander.view;
+package pl.poznan.put.fc.tpal.jcommander.views;
 
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
@@ -8,8 +8,8 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import pl.poznan.put.fc.tpal.jcommander.Main;
-import pl.poznan.put.fc.tpal.jcommander.controller.ProgressDialogController;
-import pl.poznan.put.fc.tpal.jcommander.util.BundleUtil;
+import pl.poznan.put.fc.tpal.jcommander.controllers.ProgressDialogController;
+import pl.poznan.put.fc.tpal.jcommander.utils.BundleUtil;
 
 import java.io.IOException;
 import java.util.ResourceBundle;

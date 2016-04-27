@@ -1,11 +1,11 @@
-package pl.poznan.put.fc.tpal.jcommander.fileOperation;
+package pl.poznan.put.fc.tpal.jcommander.fileOperations;
 
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import org.apache.commons.io.FilenameUtils;
-import pl.poznan.put.fc.tpal.jcommander.util.BundleUtil;
-import pl.poznan.put.fc.tpal.jcommander.util.DialogUtil;
-import pl.poznan.put.fc.tpal.jcommander.util.ReplaceOptionsUtil;
+import pl.poznan.put.fc.tpal.jcommander.utils.BundleUtil;
+import pl.poznan.put.fc.tpal.jcommander.utils.DialogUtil;
+import pl.poznan.put.fc.tpal.jcommander.utils.ReplaceOptionsUtil;
 
 import java.io.File;
 import java.io.IOException;

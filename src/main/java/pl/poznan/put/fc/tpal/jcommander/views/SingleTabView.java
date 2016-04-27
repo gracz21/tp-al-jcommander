@@ -1,10 +1,10 @@
-package pl.poznan.put.fc.tpal.jcommander.view;
+package pl.poznan.put.fc.tpal.jcommander.views;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import pl.poznan.put.fc.tpal.jcommander.controller.SingleTabController;
-import pl.poznan.put.fc.tpal.jcommander.util.BundleUtil;
+import pl.poznan.put.fc.tpal.jcommander.controllers.SingleTabController;
+import pl.poznan.put.fc.tpal.jcommander.utils.BundleUtil;
 
 import java.io.IOException;
 

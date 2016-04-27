@@ -1,4 +1,4 @@
-package pl.poznan.put.fc.tpal.jcommander.controller;
+package pl.poznan.put.fc.tpal.jcommander.controllers;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -6,8 +6,8 @@ import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.BorderPane;
-import pl.poznan.put.fc.tpal.jcommander.util.BundleUtil;
-import pl.poznan.put.fc.tpal.jcommander.view.SingleTabView;
+import pl.poznan.put.fc.tpal.jcommander.utils.BundleUtil;
+import pl.poznan.put.fc.tpal.jcommander.views.SingleTabView;
 
 import java.io.IOException;
 import java.util.ArrayList;

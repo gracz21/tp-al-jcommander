@@ -1,11 +1,10 @@
-package pl.poznan.put.fc.tpal.jcommander.controller;
+package pl.poznan.put.fc.tpal.jcommander.controllers;
 
 import javafx.concurrent.Task;
 import javafx.concurrent.Worker;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressBar;
-import javafx.stage.Stage;
 
 /**
  * @author Kamil Walkowiak

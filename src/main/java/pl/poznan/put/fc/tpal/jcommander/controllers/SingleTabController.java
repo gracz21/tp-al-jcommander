@@ -1,4 +1,4 @@
-package pl.poznan.put.fc.tpal.jcommander.controller;
+package pl.poznan.put.fc.tpal.jcommander.controllers;
 
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
@@ -9,16 +9,16 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
-import pl.poznan.put.fc.tpal.jcommander.fileOperation.FileOperationTask;
-import pl.poznan.put.fc.tpal.jcommander.fileOperation.CopyFile;
-import pl.poznan.put.fc.tpal.jcommander.fileOperation.DeleteFile;
-import pl.poznan.put.fc.tpal.jcommander.fileOperation.FileOperation;
-import pl.poznan.put.fc.tpal.jcommander.fileOperation.MoveFile;
-import pl.poznan.put.fc.tpal.jcommander.model.FileListEntry;
-import pl.poznan.put.fc.tpal.jcommander.model.NameColumnEntry;
-import pl.poznan.put.fc.tpal.jcommander.util.BundleUtil;
-import pl.poznan.put.fc.tpal.jcommander.util.DialogUtil;
-import pl.poznan.put.fc.tpal.jcommander.util.FileOperationsUtil;
+import pl.poznan.put.fc.tpal.jcommander.fileOperations.FileOperationTask;
+import pl.poznan.put.fc.tpal.jcommander.fileOperations.CopyFile;
+import pl.poznan.put.fc.tpal.jcommander.fileOperations.DeleteFile;
+import pl.poznan.put.fc.tpal.jcommander.fileOperations.FileOperation;
+import pl.poznan.put.fc.tpal.jcommander.fileOperations.MoveFile;
+import pl.poznan.put.fc.tpal.jcommander.models.FileListEntry;
+import pl.poznan.put.fc.tpal.jcommander.models.NameColumnEntry;
+import pl.poznan.put.fc.tpal.jcommander.utils.BundleUtil;
+import pl.poznan.put.fc.tpal.jcommander.utils.DialogUtil;
+import pl.poznan.put.fc.tpal.jcommander.utils.FileOperationsUtil;
 
 import java.io.File;
 import java.io.IOException;

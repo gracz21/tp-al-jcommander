@@ -1,4 +1,4 @@
-package pl.poznan.put.fc.tpal.jcommander.util;
+package pl.poznan.put.fc.tpal.jcommander.utils;
 
 /**
  * @author Kamil Walkowiak

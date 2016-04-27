@@ -1,9 +1,8 @@
-package pl.poznan.put.fc.tpal.jcommander.model;
+package pl.poznan.put.fc.tpal.jcommander.models;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import pl.poznan.put.fc.tpal.jcommander.Main;
-import pl.poznan.put.fc.tpal.jcommander.util.BundleUtil;
+import pl.poznan.put.fc.tpal.jcommander.utils.BundleUtil;
 
 import javax.swing.*;
 import java.io.File;

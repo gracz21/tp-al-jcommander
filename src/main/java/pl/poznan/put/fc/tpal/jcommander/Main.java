@@ -5,7 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import pl.poznan.put.fc.tpal.jcommander.util.BundleUtil;
+import pl.poznan.put.fc.tpal.jcommander.utils.BundleUtil;
 
 import java.io.IOException;
 import java.util.Observable;

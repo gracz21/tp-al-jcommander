@@ -1,8 +1,8 @@
-package pl.poznan.put.fc.tpal.jcommander.util;
+package pl.poznan.put.fc.tpal.jcommander.utils;
 
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
-import pl.poznan.put.fc.tpal.jcommander.model.FileListEntry;
+import pl.poznan.put.fc.tpal.jcommander.models.FileListEntry;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
@@ -10,7 +10,6 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Arrays;
 import java.util.List;
 

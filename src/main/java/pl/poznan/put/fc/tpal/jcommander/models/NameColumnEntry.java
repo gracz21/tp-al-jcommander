@@ -1,4 +1,4 @@
-package pl.poznan.put.fc.tpal.jcommander.model;
+package pl.poznan.put.fc.tpal.jcommander.models;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;

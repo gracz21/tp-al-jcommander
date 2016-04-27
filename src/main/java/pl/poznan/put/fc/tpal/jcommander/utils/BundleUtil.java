@@ -1,4 +1,4 @@
-package pl.poznan.put.fc.tpal.jcommander.util;
+package pl.poznan.put.fc.tpal.jcommander.utils;
 
 import java.util.Locale;
 import java.util.Observable;
