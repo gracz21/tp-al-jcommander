@@ -17,6 +17,9 @@
         <Label fx:id="sizeLabel" text="Label" />
     </ToolBar>
     <TableView fx:id="fileList" prefHeight="366.0" prefWidth="295.0" VBox.vgrow="ALWAYS">
+        <placeholder>
+            <Label text=""/>
+        </placeholder>
         <columns>
             <TableColumn fx:id="nameColumn" prefWidth="75.0" text="%fileList.columns.name" />
             <TableColumn fx:id="sizeColumn" prefWidth="75.0" text="%fileList.columns.size" />
