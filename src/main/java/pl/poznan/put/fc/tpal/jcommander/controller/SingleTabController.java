@@ -17,6 +17,7 @@ import pl.poznan.put.fc.tpal.jcommander.fileOperation.MoveFile;
 import pl.poznan.put.fc.tpal.jcommander.model.FileListEntry;
 import pl.poznan.put.fc.tpal.jcommander.model.NameColumnEntry;
 import pl.poznan.put.fc.tpal.jcommander.util.BundleUtil;
+import pl.poznan.put.fc.tpal.jcommander.util.DialogUtil;
 import pl.poznan.put.fc.tpal.jcommander.util.FileOperationsUtil;
 
 import java.io.File;
@@ -212,10 +213,7 @@ public class SingleTabController {
     }
 
     private void handleDeleteAction() throws IOException {
-        Alert alert = setupDeleteDialog();
-
-        Optional<ButtonType> result = alert.showAndWait();
-        if(result.get() == ButtonType.OK) {
+        if(DialogUtil.deleteDialog()) {
             ObservableList<FileListEntry> fileListEntries = fileList.getSelectionModel().getSelectedItems();
             List<File> filesToDelete = fileListEntries.stream().
                     map(FileListEntry::getFile).collect(Collectors.toList());
@@ -224,26 +222,6 @@ public class SingleTabController {
             DeleteFile deleteFiles = new DeleteFile(filesToDelete, isCanceledProperty);
             new Thread(new FileOperationTask(deleteFiles, filesToDelete, isCanceledProperty)).start();
         }
-    }
-
-    private Alert setupDeleteDialog() {
-        ResourceBundle bundle = BundleUtil.getInstance().getBundle();
-
-        Alert result = new Alert(Alert.AlertType.WARNING);
-        result.setTitle(bundle.getString("warningTitle"));
-        result.setHeaderText(bundle.getString("deleteHeader"));
-        result.setContentText(bundle.getString("deleteWarning"));
-        result.getButtonTypes().add(ButtonType.CANCEL);
-
-        Button button = (Button) result.getDialogPane().lookupButton(ButtonType.OK);
-        button.setDefaultButton(false);
-        button.setText(bundle.getString("yesOption"));
-
-        button = (Button) result.getDialogPane().lookupButton(ButtonType.CANCEL);
-        button.setDefaultButton(true);
-        button.setText(bundle.getString("noOption"));
-
-        return result;
     }
 
     private static class NameColumnEntryCell extends TableCell<FileListEntry, NameColumnEntry> {

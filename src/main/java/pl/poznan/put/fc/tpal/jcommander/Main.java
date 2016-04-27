@@ -14,7 +14,7 @@ import java.util.Observer;
 public class Main extends Application implements Observer {
     private FXMLLoader loader;
     private Parent root;
-    private Stage primaryStage;
+    private static Stage primaryStage;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -24,16 +24,20 @@ public class Main extends Application implements Observer {
 
         primaryStage.setTitle("JCommander");
         primaryStage.setScene(new Scene(root));
-        this.primaryStage = primaryStage;
+        Main.primaryStage = primaryStage;
 
         BundleUtil.getInstance().addObserver(this);
 
         //primaryStage.setMaximized(true);
-        primaryStage.show();
+        Main.primaryStage.show();
     }
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    public static Stage getPrimaryStage() {
+        return primaryStage;
     }
 
     @Override
@@ -46,6 +50,6 @@ public class Main extends Application implements Observer {
         } catch(IOException e) {
             e.printStackTrace();
         }
-        this.primaryStage.getScene().setRoot(root);
+        Main.primaryStage.getScene().setRoot(root);
     }
 }

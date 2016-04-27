@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import pl.poznan.put.fc.tpal.jcommander.Main;
 import pl.poznan.put.fc.tpal.jcommander.controller.ProgressDialogController;
 import pl.poznan.put.fc.tpal.jcommander.util.BundleUtil;
 
@@ -24,9 +25,10 @@ public class ProgressDialogView {
         ResourceBundle bundle = BundleUtil.getInstance().getBundle();
 
         stage = new Stage();
-        stage.initStyle(StageStyle.UTILITY);
+        stage.initStyle(StageStyle.DECORATED);
         stage.setResizable(false);
-        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.initOwner(Main.getPrimaryStage());
+        stage.initModality(Modality.NONE);
         stage.setTitle(bundle.getString("operationProgress"));
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ProgressDialogLayout.fxml"));

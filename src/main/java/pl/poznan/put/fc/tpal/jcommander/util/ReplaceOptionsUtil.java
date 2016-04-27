@@ -5,6 +5,6 @@ package pl.poznan.put.fc.tpal.jcommander.util;
  */
 public abstract class ReplaceOptionsUtil {
     public enum replaceOptions {
-        YES, NO, YES_ALL, NO_ALL
+        YES, KEEP, NO, YES_ALL, KEEP_ALL, NO_ALL, CANCEL
     }
 }
