@@ -22,7 +22,9 @@ public class MoveFile extends ChangeFileDirOperation {
     @Override
     public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
         if(!isCanceledProperty.get()) {
-            Files.delete(dir);
+            if(exc == null) {
+                Files.delete(dir);
+            }
             return CONTINUE;
         } else {
             return TERMINATE;

@@ -56,6 +56,8 @@ public class SingleTabController implements Observer {
     @FXML
     private Label sizeLabel;
     @FXML
+    private ToolBar bottomToolBar;
+    @FXML
     private TextField pathTextField;
 
     @FXML
@@ -64,7 +66,19 @@ public class SingleTabController implements Observer {
         currentDirectory = new SimpleStringProperty("C:\\");
         parentPath = new SimpleStringProperty("");
 
-        Bindings.bindBidirectional(pathTextField.textProperty(), currentPath);
+        pathTextField.setText("C:\\");
+        pathTextField.setOnKeyPressed(event ->{
+            if(event.getCode() == KeyCode.ENTER) {
+                try {
+                    handleChangePath(new File(pathTextField.getText()));
+                } catch(IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        );
+//        pathTextField.prefWidthProperty().bind(bottomToolBar.maxWidthProperty());
+//        pathTextField.prefHeightProperty().bind(bottomToolBar.prefHeightProperty());
 
         initializeColumns();
         initializeFileLists();
@@ -220,10 +234,13 @@ public class SingleTabController implements Observer {
     }
 
     private void handleChangePath(File file) throws IOException {
-        currentPath.set(file.getPath());
-        currentDirectory.set(file.getName());
-        FileOperationsUtil.listPathContent(fileList.getItems(), file, parentPath);
-        fileList.sort();
+        if(file.exists()) {
+            currentPath.set(file.getPath());
+            currentDirectory.set(file.getName());
+            pathTextField.setText(currentPath.get());
+            FileOperationsUtil.listPathContent(fileList.getItems(), file, parentPath);
+            fileList.sort();
+        }
     }
 
     private void handleDeleteAction() throws IOException {
