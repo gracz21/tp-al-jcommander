@@ -22,13 +22,13 @@ public abstract class FileOperation extends SimpleFileVisitor<Path> {
         this.progress = new ReadOnlyLongWrapper(this, "progress");
     }
 
-    long getProgress() {
+    public long getProgress() {
         return progress.get();
     }
 
-    ReadOnlyLongWrapper progressProperty() {
+    public ReadOnlyLongWrapper progressProperty() {
         return progress;
     }
 
-    abstract void execute() throws IOException;
+    public abstract void execute() throws IOException;
 }

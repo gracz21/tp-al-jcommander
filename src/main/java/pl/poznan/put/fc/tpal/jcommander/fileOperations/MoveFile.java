@@ -27,7 +27,7 @@ public class MoveFile extends FileOperation {
     }
 
     @Override
-    void execute() throws IOException {
+    public void execute() throws IOException {
         for(Path path: sourcePaths) {
             if(isCanceledProperty.get()) {
                 break;

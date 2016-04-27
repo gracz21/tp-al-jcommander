@@ -14,7 +14,7 @@ public class DeleteFile extends FileOperation {
     }
 
     @Override
-    void execute() {
+    public void execute() {
         for(File file: files) {
             if(this.isCanceledProperty.get()) {
                 break;
