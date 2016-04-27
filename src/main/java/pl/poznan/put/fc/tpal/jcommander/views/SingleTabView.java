@@ -22,6 +22,7 @@ public class SingleTabView {
         layout = (VBox) loader.load();
 
         controller = loader.getController();
+        BundleUtil.getInstance().addObserver(controller);
     }
 
     public Pane getLayout() {

@@ -9,6 +9,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
+import pl.poznan.put.fc.tpal.jcommander.comparators.NameComparator;
 import pl.poznan.put.fc.tpal.jcommander.comparators.SizeComparator;
 import pl.poznan.put.fc.tpal.jcommander.tasks.FileOperationTask;
 import pl.poznan.put.fc.tpal.jcommander.fileOperations.CopyFile;
@@ -31,7 +32,7 @@ import java.util.stream.Collectors;
 /**
  * @author Kamil Walkowiak
  */
-public class SingleTabController {
+public class SingleTabController implements Observer {
     private String currentPath;
     private StringProperty currentDirectory;
     private StringProperty parentPath;
@@ -85,6 +86,7 @@ public class SingleTabController {
     private void initializeColumns() {
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("nameColumnEntry"));
         nameColumn.setCellFactory(param -> new NameColumnEntryCell());
+        nameColumn.setComparator(new NameComparator());
         sizeColumn.setCellValueFactory(cellData -> cellData.getValue().fileSizeProperty());
         sizeColumn.setComparator(new SizeComparator());
         dateColumn.setCellValueFactory(cellData -> cellData.getValue().formattedFileDateOfCreationProperty());
@@ -224,6 +226,22 @@ public class SingleTabController {
             DeleteFile deleteFiles = new DeleteFile(pathsToDelete, isCanceledProperty);
             new Thread(new FileOperationTask(deleteFiles, isCanceledProperty)).start();
         }
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        ResourceBundle bundle = BundleUtil.getInstance().getBundle();
+
+        nameColumn.setText(bundle.getString("fileList.columns.name"));
+        sizeColumn.setText(bundle.getString("fileList.columns.size"));
+        dateColumn.setText(bundle.getString("fileList.columns.date"));
+
+        try {
+            FileOperationsUtil.listPathContent(fileList.getItems(), new File(currentPath), parentPath);
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+        fileList.sort();
     }
 
     private static class NameColumnEntryCell extends TableCell<FileListEntry, NameColumnEntry> {

@@ -2,19 +2,30 @@ package pl.poznan.put.fc.tpal.jcommander.controllers;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.control.RadioMenuItem;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import pl.poznan.put.fc.tpal.jcommander.utils.BundleUtil;
 import pl.poznan.put.fc.tpal.jcommander.views.SingleTabView;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
+import java.util.ResourceBundle;
 
-public class RootController {
+public class RootController  implements Observer {
     @FXML
     private ArrayList<TabPane> tabPanes;
+    @FXML
+    private Menu fileMenu;
+    @FXML
+    private Menu changeLanguageMenu;
+    @FXML
+    private Menu helpMenu;
+    @FXML
+    private MenuItem close;
+    @FXML
+    private MenuItem about;
     @FXML
     private RadioMenuItem changeToEnglish;
     @FXML
@@ -85,5 +96,17 @@ public class RootController {
         singleTabView.getLayout().prefWidthProperty().bind(borderPane.widthProperty());
         singleTabView.getLayout().prefHeightProperty().bind(borderPane.heightProperty());
         tab.textProperty().bind(singleTabView.getController().currentDirectoryProperty());
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        ResourceBundle bundle = BundleUtil.getInstance().getBundle();
+
+        fileMenu.setText(bundle.getString("menu.file"));
+        changeLanguageMenu.setText(bundle.getString("menu.changeLanguage"));
+        helpMenu.setText(bundle.getString("menu.help"));
+
+        close.setText(bundle.getString("file.close"));
+        about.setText(bundle.getString("help.about"));
     }
 }

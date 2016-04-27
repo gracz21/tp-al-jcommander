@@ -18,13 +18,10 @@
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.poznan.put.fc.tpal.jcommander.controllers.RootController">
     <VBox prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <MenuBar prefWidth="600.0">
-            <Menu mnemonicParsing="false" text="%menu.file">
-                <MenuItem mnemonicParsing="false" onAction="#handleMenuClose" text="%menu.file.close" />
+            <Menu fx:id="fileMenu" mnemonicParsing="false" text="%menu.file">
+                <MenuItem fx:id="close" mnemonicParsing="false" onAction="#handleMenuClose" text="%file.close" />
             </Menu>
-            <Menu mnemonicParsing="false" text="%menu.edit">
-                <MenuItem mnemonicParsing="false" text="Delete" />
-            </Menu>
-         <Menu mnemonicParsing="false" text="%menu.changeLanguage">
+         <Menu fx:id="changeLanguageMenu" mnemonicParsing="false" text="%menu.changeLanguage">
             <items>
                <RadioMenuItem fx:id="changeToEnglish" mnemonicParsing="false" onAction="#handleMenuToEnglish" text="English">
                   <toggleGroup>
@@ -34,8 +31,8 @@
                <RadioMenuItem fx:id="changeToPolish" mnemonicParsing="false" onAction="#handleMenuToPolish" selected="true" text="Polski" toggleGroup="$language" />
             </items>
          </Menu>
-            <Menu mnemonicParsing="false" text="%menu.help">
-                <MenuItem mnemonicParsing="false" text="About" />
+            <Menu fx:id="helpMenu" mnemonicParsing="false" text="%menu.help">
+                <MenuItem fx:id="about" mnemonicParsing="false" text="%help.about" />
             </Menu>
         </MenuBar>
         <SplitPane dividerPositions="0.5" prefHeight="372.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
