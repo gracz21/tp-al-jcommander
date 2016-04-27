@@ -7,7 +7,6 @@ import pl.poznan.put.fc.tpal.jcommander.utils.BundleUtil;
 import pl.poznan.put.fc.tpal.jcommander.utils.DialogUtil;
 import pl.poznan.put.fc.tpal.jcommander.utils.ReplaceOptionsUtil;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -24,21 +23,19 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
  * @author Kamil Walkowiak
  */
 public class CopyFile extends FileOperation {
-    private List<Path> sourcePaths;
     private Path targetPath;
     private Path currentSourcePath;
     private Path currentTargetPath;
     private Boolean replaceAll;
 
-    public CopyFile(List<File> files, BooleanProperty isCanceledProperty, List<Path> sourcePaths, Path targetPath) {
-        super(files, isCanceledProperty);
-        this.sourcePaths = sourcePaths;
+    public CopyFile(List<Path> paths, BooleanProperty isCanceledProperty, Path targetPath) {
+        super(paths, isCanceledProperty);
         this.targetPath = targetPath;
     }
 
     @Override
     public void execute() throws IOException {
-        for(Path path: sourcePaths) {
+        for(Path path: paths) {
             if(isCanceledProperty.get()) {
                 break;
             }

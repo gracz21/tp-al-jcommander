@@ -6,22 +6,18 @@ import pl.poznan.put.fc.tpal.jcommander.fileOperations.FileOperation;
 import pl.poznan.put.fc.tpal.jcommander.utils.FileOperationsUtil;
 import pl.poznan.put.fc.tpal.jcommander.views.ProgressDialogView;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 /**
  * @author Kamil Walkowiak
  */
 public class FileOperationTask extends Task<Void> {
     private FileOperation fileOperation;
-    private List<File> fileList;
     private BooleanProperty isCanceledProperty;
     private ProgressDialogView progressDialog;
 
-    public FileOperationTask(FileOperation fileOperation, List<File> fileList, BooleanProperty isCanceledProperty) throws IOException {
+    public FileOperationTask(FileOperation fileOperation, BooleanProperty isCanceledProperty) throws IOException {
         this.fileOperation = fileOperation;
-        this.fileList = fileList;
         this.isCanceledProperty = isCanceledProperty;
         this.progressDialog = new ProgressDialogView();
 
@@ -36,7 +32,7 @@ public class FileOperationTask extends Task<Void> {
 
     @Override
     protected Void call() throws Exception {
-        long fileListSize = FileOperationsUtil.getFileListSize(fileList);
+        long fileListSize = FileOperationsUtil.getPathListSize(fileOperation.getPaths());
 
         fileOperation.progressProperty().addListener((observable, oldValue, newValue) -> {
             updateProgress(fileOperation.getProgress(), fileListSize);

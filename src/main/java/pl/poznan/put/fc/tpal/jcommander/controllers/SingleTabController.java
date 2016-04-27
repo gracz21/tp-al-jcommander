@@ -183,13 +183,13 @@ public class SingleTabController {
 
                 FileOperation fileOperation;
                 if(event.getTransferMode() == TransferMode.COPY) {
-                    fileOperation = new CopyFile(null, isCanceledProperty, paths, Paths.get(currentPath));
+                    fileOperation = new CopyFile(paths, isCanceledProperty, Paths.get(currentPath));
                 } else {
-                    fileOperation = new MoveFile(null, isCanceledProperty, paths, Paths.get(currentPath));
+                    fileOperation = new MoveFile(paths, isCanceledProperty, Paths.get(currentPath));
                 }
 
                 try {
-                    new Thread(new FileOperationTask(fileOperation, files, isCanceledProperty)).start();
+                    new Thread(new FileOperationTask(fileOperation, isCanceledProperty)).start();
                 } catch(IOException e) {
                     e.printStackTrace();
                 }
@@ -217,12 +217,12 @@ public class SingleTabController {
     private void handleDeleteAction() throws IOException {
         if(DialogUtil.deleteDialog()) {
             ObservableList<FileListEntry> fileListEntries = fileList.getSelectionModel().getSelectedItems();
-            List<File> filesToDelete = fileListEntries.stream().
-                    map(FileListEntry::getFile).collect(Collectors.toList());
+            List<Path> pathsToDelete = fileListEntries.stream().
+                    map(fileListEntry -> Paths.get(fileListEntry.getFile().getPath())).collect(Collectors.toList());
 
             BooleanProperty isCanceledProperty = new SimpleBooleanProperty(false);
-            DeleteFile deleteFiles = new DeleteFile(filesToDelete, isCanceledProperty);
-            new Thread(new FileOperationTask(deleteFiles, filesToDelete, isCanceledProperty)).start();
+            DeleteFile deleteFiles = new DeleteFile(pathsToDelete, isCanceledProperty);
+            new Thread(new FileOperationTask(deleteFiles, isCanceledProperty)).start();
         }
     }
 

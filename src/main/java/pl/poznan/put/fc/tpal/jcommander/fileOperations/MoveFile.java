@@ -2,7 +2,6 @@ package pl.poznan.put.fc.tpal.jcommander.fileOperations;
 
 import javafx.beans.property.BooleanProperty;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -15,20 +14,19 @@ import static java.nio.file.FileVisitResult.TERMINATE;
  * @author Kamil Walkowiak
  */
 public class MoveFile extends FileOperation {
-    private List<Path> sourcePaths;
     private Path targetPath;
     private Path currentSourcePath;
     private Path currentTargetPath;
 
-    public MoveFile(List<File> files, BooleanProperty isCanceledProperty, List<Path> sourcePaths, Path targetPath) {
-        super(files, isCanceledProperty);
-        this.sourcePaths = sourcePaths;
+    public MoveFile(List<Path> paths, BooleanProperty isCanceledProperty, Path targetPath) {
+        super(paths, isCanceledProperty);
+        this.paths = paths;
         this.targetPath = targetPath;
     }
 
     @Override
     public void execute() throws IOException {
-        for(Path path: sourcePaths) {
+        for(Path path: paths) {
             if(isCanceledProperty.get()) {
                 break;
             }

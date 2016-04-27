@@ -10,8 +10,10 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Arrays;
+import java.nio.file.Path;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Kamil Walkowiak
@@ -28,14 +30,16 @@ public abstract class FileOperationsUtil {
         return Long.toString(rootFile.getFreeSpace()/1024);
     }
 
-    public static Long getFileListSize(List<File> files) {
+    public static Long getPathListSize(List<Path> paths) throws IOException {
         long result = 0;
 
-        for(File file: files) {
-            if(file.isDirectory()) {
-                result += getFileListSize(Arrays.asList(file.listFiles()));
+        for(Path path: paths) {
+            if(Files.isDirectory(path)) {
+                Stream<Path> stream = Files.list(path);
+                result += getPathListSize(stream.collect(Collectors.toList()));
+                stream.close();
             } else {
-                result += file.length();
+                result += Files.size(path);
             }
         }
 
