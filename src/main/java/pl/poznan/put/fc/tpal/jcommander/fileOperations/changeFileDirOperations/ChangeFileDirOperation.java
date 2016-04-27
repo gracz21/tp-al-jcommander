@@ -1,14 +1,17 @@
-package pl.poznan.put.fc.tpal.jcommander.fileOperations;
+package pl.poznan.put.fc.tpal.jcommander.fileOperations.changeFileDirOperations;
 
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
-import org.apache.commons.io.FilenameUtils;
+import pl.poznan.put.fc.tpal.jcommander.fileOperations.FileOperation;
 import pl.poznan.put.fc.tpal.jcommander.utils.BundleUtil;
 import pl.poznan.put.fc.tpal.jcommander.utils.DialogUtil;
 import pl.poznan.put.fc.tpal.jcommander.utils.ReplaceOptionsUtil;
 
 import java.io.IOException;
-import java.nio.file.*;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.text.DateFormat;
 import java.util.List;
@@ -17,18 +20,17 @@ import java.util.concurrent.FutureTask;
 
 import static java.nio.file.FileVisitResult.CONTINUE;
 import static java.nio.file.FileVisitResult.TERMINATE;
-import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 /**
  * @author Kamil Walkowiak
  */
-public class CopyFile extends FileOperation {
-    private Path targetPath;
-    private Path currentSourcePath;
-    private Path currentTargetPath;
-    private Boolean replaceAll;
+public abstract class ChangeFileDirOperation extends FileOperation {
+    Path targetPath;
+    Path currentSourcePath;
+    Path currentTargetPath;
+    Boolean replaceAll;
 
-    public CopyFile(List<Path> paths, BooleanProperty isCanceledProperty, Path targetPath) {
+    public ChangeFileDirOperation(List<Path> paths, BooleanProperty isCanceledProperty, Path targetPath) {
         super(paths, isCanceledProperty);
         this.targetPath = targetPath;
     }
@@ -43,11 +45,6 @@ public class CopyFile extends FileOperation {
                 currentSourcePath = path;
                 currentTargetPath = Paths.get(targetPath.toString(), currentSourcePath.getFileName().toString());
                 Files.walkFileTree(path, this);
-                try {
-                    Thread.sleep(4000);
-                } catch(InterruptedException e) {
-                    e.printStackTrace();
-                }
             }
         } else {
             Platform.runLater(DialogUtil::noWriteAccessDialog);
@@ -57,9 +54,9 @@ public class CopyFile extends FileOperation {
     @Override
     public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
         if(!isCanceledProperty.get()) {
-            Path targetDir = currentTargetPath.resolve(currentSourcePath.relativize(dir));
-            if(!Files.exists(dir)) {
-                Files.copy(dir, targetDir);
+            Path path = currentTargetPath.resolve(currentSourcePath.relativize(dir));
+            if(!Files.exists(path)) {
+                Files.copy(dir, path);
             }
             return CONTINUE;
         } else {
@@ -70,40 +67,28 @@ public class CopyFile extends FileOperation {
     @Override
     public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
         if(!isCanceledProperty.get()) {
-            Path targetPath = currentTargetPath.resolve(currentSourcePath.relativize(file).toString());
-            if(!Files.exists(targetPath)) {
-                Files.copy(file, targetPath);
+            Path path = currentTargetPath.resolve(currentSourcePath.relativize(file).toString());
+            String fileName = file.getFileName().toString();
+            if(!Files.exists(path)) {
+                changeFileDirOperation(file, path, false);
             } else {
                 if(replaceAll == null) {
-                    String fileName = file.getFileName().toString();
-                    String[] sizes = new String[]{Long.toString(Files.size(targetPath)), Long.toString(Files.size(file))};
-                    DateFormat df = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT,
-                            BundleUtil.getInstance().getCurrentLocale());
-                    String[] dates = new String[]{df.format(Files.getLastModifiedTime(file).toMillis()),
-                            df.format(Files.getLastModifiedTime(targetPath).toMillis())};
-
-                    FutureTask<ReplaceOptionsUtil> dialog =
-                            new FutureTask<>(() -> DialogUtil.replaceDialog(fileName, sizes, dates));
-                    Platform.runLater(dialog);
-
                     try {
-                        switch(dialog.get()) {
+                        switch(showReplaceDialog(file, path, fileName)) {
                             case YES:
-                                Files.copy(file, targetPath, REPLACE_EXISTING);
+                                changeFileDirOperation(file, path, true);
                                 break;
                             case KEEP:
-                                String baseFileName = FilenameUtils.getBaseName(fileName);
-                                String fileExtension = FilenameUtils.getExtension(fileName);
-                                Path fileCopy = file.resolveSibling(baseFileName + "_copy" + "." + fileExtension);
-                                Files.copy(file, currentTargetPath.resolve(currentSourcePath.relativize(fileCopy).toString()), REPLACE_EXISTING);
+                                keepBoth(file, path, fileName);
                                 break;
                             case NO:
                                 break;
                             case YES_ALL:
-                                Files.copy(file, targetPath, REPLACE_EXISTING);
+                                changeFileDirOperation(file, path, true);
                                 replaceAll = Boolean.TRUE;
                                 break;
                             case KEEP_ALL:
+                                keepBoth(file, path, fileName);
                                 break;
                             case NO_ALL:
                                 replaceAll = Boolean.FALSE;
@@ -116,14 +101,32 @@ public class CopyFile extends FileOperation {
                     }
                 } else {
                     if(replaceAll) {
-                        Files.copy(file, targetPath, REPLACE_EXISTING);
+                        changeFileDirOperation(file, path, true);
                     }
                 }
             }
-            progress.set(progress.getValue() + Files.size(file));
+            progress.set(progress.getValue() + Files.size(path));
             return CONTINUE;
         } else {
             return TERMINATE;
         }
     }
+
+    private ReplaceOptionsUtil showReplaceDialog(Path file, Path old, String fileName) throws IOException, ExecutionException, InterruptedException {
+        String[] sizes = new String[]{Long.toString(Files.size(old)), Long.toString(Files.size(file))};
+        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT,
+                BundleUtil.getInstance().getCurrentLocale());
+        String[] dates = new String[]{df.format(Files.getLastModifiedTime(file).toMillis()),
+                df.format(Files.getLastModifiedTime(old).toMillis())};
+
+        FutureTask<ReplaceOptionsUtil> dialog =
+                new FutureTask<>(() -> DialogUtil.replaceDialog(fileName, sizes, dates));
+        Platform.runLater(dialog);
+
+        return dialog.get();
+    }
+
+    abstract void changeFileDirOperation(Path file, Path destination, boolean replace) throws IOException;
+
+    abstract void keepBoth(Path file, Path destination, String fileName) throws IOException;
 }

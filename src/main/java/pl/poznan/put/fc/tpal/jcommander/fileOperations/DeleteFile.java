@@ -27,11 +27,6 @@ public class DeleteFile extends FileOperation {
                 break;
             }
             Files.walkFileTree(path, this);
-            try {
-                Thread.sleep(4000);
-            } catch(InterruptedException e) {
-                e.printStackTrace();
-            }
         }
     }
 
