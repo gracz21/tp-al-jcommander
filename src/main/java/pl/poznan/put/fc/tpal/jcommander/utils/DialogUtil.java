@@ -28,8 +28,19 @@ public abstract class DialogUtil {
         return selectedOption.isPresent() && selectedOption.get() == buttonYes;
     }
 
-    public static ReplaceOptionsUtil.replaceOptions replaceDialog(String fileName, String[] sizes, String[] dates) {
-        final ReplaceOptionsUtil.replaceOptions result;
+    public static void noWriteAccessDialog() {
+        ResourceBundle bundle = BundleUtil.getInstance().getBundle();
+
+        Alert dialog = new Alert(Alert.AlertType.ERROR);
+        dialog.setTitle(bundle.getString("errorTitle"));
+        dialog.setHeaderText(bundle.getString("noWriteAccessHeader"));
+        dialog.setContentText(bundle.getString("noWriteAccessContent"));
+
+        dialog.showAndWait();
+    }
+
+    public static ReplaceOptionsUtil replaceDialog(String fileName, String[] sizes, String[] dates) {
+        final ReplaceOptionsUtil result;
         ResourceBundle bundle = BundleUtil.getInstance().getBundle();
 
         Alert dialog = new Alert(Alert.AlertType.CONFIRMATION);
@@ -52,22 +63,22 @@ public abstract class DialogUtil {
 
         if(selectedOption.isPresent()) {
             if(selectedOption.get() == buttonReplace) {
-                result = ReplaceOptionsUtil.replaceOptions.YES;
+                result = ReplaceOptionsUtil.YES;
             } else if(selectedOption.get() == buttonKeep) {
-                result = ReplaceOptionsUtil.replaceOptions.KEEP;
+                result = ReplaceOptionsUtil.KEEP;
             } else if(selectedOption.get() == buttonSkip) {
-                result = ReplaceOptionsUtil.replaceOptions.NO;
+                result = ReplaceOptionsUtil.NO;
             } else if(selectedOption.get() == buttonReplaceAll) {
-                result = ReplaceOptionsUtil.replaceOptions.YES_ALL;
+                result = ReplaceOptionsUtil.YES_ALL;
             } else if(selectedOption.get() == buttonKeepAll) {
-                result = ReplaceOptionsUtil.replaceOptions.KEEP_ALL;
+                result = ReplaceOptionsUtil.KEEP_ALL;
             } else if(selectedOption.get() == buttonSkipAll) {
-                result = ReplaceOptionsUtil.replaceOptions.NO_ALL;
+                result = ReplaceOptionsUtil.NO_ALL;
             } else {
-                result = ReplaceOptionsUtil.replaceOptions.CANCEL;
+                result = ReplaceOptionsUtil.CANCEL;
             }
         } else {
-            result = ReplaceOptionsUtil.replaceOptions.CANCEL;
+            result = ReplaceOptionsUtil.CANCEL;
         }
 
         return result;

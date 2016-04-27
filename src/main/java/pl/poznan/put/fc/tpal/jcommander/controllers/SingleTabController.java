@@ -1,5 +1,6 @@
 package pl.poznan.put.fc.tpal.jcommander.controllers;
 
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -33,7 +34,7 @@ import java.util.stream.Collectors;
  * @author Kamil Walkowiak
  */
 public class SingleTabController implements Observer {
-    private String currentPath;
+    private StringProperty currentPath;
     private StringProperty currentDirectory;
     private StringProperty parentPath;
     private boolean canBeDropped;
@@ -54,12 +55,16 @@ public class SingleTabController implements Observer {
     private Button rootButton;
     @FXML
     private Label sizeLabel;
+    @FXML
+    private TextField pathTextField;
 
     @FXML
     private void initialize() throws IOException {
-        currentPath = "C:\\";
+        currentPath = new SimpleStringProperty("C:\\");
         currentDirectory = new SimpleStringProperty("C:\\");
         parentPath = new SimpleStringProperty("");
+
+        Bindings.bindBidirectional(pathTextField.textProperty(), currentPath);
 
         initializeColumns();
         initializeFileLists();
@@ -93,7 +98,7 @@ public class SingleTabController implements Observer {
     }
 
     private void initializeFileLists() throws IOException {
-        fileList.setItems(FileOperationsUtil.listPathContent(FXCollections.observableArrayList(), new File(currentPath),
+        fileList.setItems(FileOperationsUtil.listPathContent(FXCollections.observableArrayList(), new File(currentPath.get()),
                 parentPath));
         fileList.setOnMousePressed(event -> {
             if(event.isPrimaryButtonDown() && event.getClickCount() == 2) {
@@ -190,9 +195,9 @@ public class SingleTabController implements Observer {
 
                 FileOperation fileOperation;
                 if(event.getTransferMode() == TransferMode.COPY) {
-                    fileOperation = new CopyFile(paths, isCanceledProperty, Paths.get(currentPath));
+                    fileOperation = new CopyFile(paths, isCanceledProperty, Paths.get(currentPath.get()));
                 } else {
-                    fileOperation = new MoveFile(paths, isCanceledProperty, Paths.get(currentPath));
+                    fileOperation = new MoveFile(paths, isCanceledProperty, Paths.get(currentPath.get()));
                 }
 
                 try {
@@ -215,7 +220,7 @@ public class SingleTabController implements Observer {
     }
 
     private void handleChangePath(File file) throws IOException {
-        currentPath = file.getPath();
+        currentPath.set(file.getPath());
         currentDirectory.set(file.getName());
         FileOperationsUtil.listPathContent(fileList.getItems(), file, parentPath);
         fileList.sort();
@@ -244,7 +249,7 @@ public class SingleTabController implements Observer {
         setSizeLabel(rootsComboBox.getSelectionModel().getSelectedItem());
 
         try {
-            FileOperationsUtil.listPathContent(fileList.getItems(), new File(currentPath), parentPath);
+            FileOperationsUtil.listPathContent(fileList.getItems(), new File(currentPath.get()), parentPath);
         } catch(IOException e) {
             e.printStackTrace();
         }

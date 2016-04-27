@@ -35,13 +35,22 @@ public class CopyFile extends FileOperation {
 
     @Override
     public void execute() throws IOException {
-        for(Path path: paths) {
-            if(isCanceledProperty.get()) {
-                break;
+        if(Files.isWritable(targetPath)) {
+            for(Path path : paths) {
+                if(isCanceledProperty.get()) {
+                    break;
+                }
+                currentSourcePath = path;
+                currentTargetPath = Paths.get(targetPath.toString(), currentSourcePath.getFileName().toString());
+                Files.walkFileTree(path, this);
+                try {
+                    Thread.sleep(4000);
+                } catch(InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
-            currentSourcePath = path;
-            currentTargetPath = Paths.get(targetPath.toString(), currentSourcePath.getFileName().toString());
-            Files.walkFileTree(path, this);
+        } else {
+            Platform.runLater(DialogUtil::noWriteAccessDialog);
         }
     }
 
@@ -73,7 +82,7 @@ public class CopyFile extends FileOperation {
                     String[] dates = new String[]{df.format(Files.getLastModifiedTime(file).toMillis()),
                             df.format(Files.getLastModifiedTime(targetPath).toMillis())};
 
-                    FutureTask<ReplaceOptionsUtil.replaceOptions> dialog =
+                    FutureTask<ReplaceOptionsUtil> dialog =
                             new FutureTask<>(() -> DialogUtil.replaceDialog(fileName, sizes, dates));
                     Platform.runLater(dialog);
 
