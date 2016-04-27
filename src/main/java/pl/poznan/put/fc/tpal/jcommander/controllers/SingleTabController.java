@@ -1,6 +1,5 @@
 package pl.poznan.put.fc.tpal.jcommander.controllers;
 
-import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -56,8 +55,6 @@ public class SingleTabController implements Observer {
     @FXML
     private Label sizeLabel;
     @FXML
-    private ToolBar bottomToolBar;
-    @FXML
     private TextField pathTextField;
 
     @FXML
@@ -77,8 +74,6 @@ public class SingleTabController implements Observer {
             }
         }
         );
-//        pathTextField.prefWidthProperty().bind(bottomToolBar.maxWidthProperty());
-//        pathTextField.prefHeightProperty().bind(bottomToolBar.prefHeightProperty());
 
         initializeColumns();
         initializeFileLists();
@@ -237,6 +232,9 @@ public class SingleTabController implements Observer {
         if(file.exists()) {
             currentPath.set(file.getPath());
             currentDirectory.set(file.getName());
+            if(currentDirectory.get().equals("")) {
+                currentDirectory.set(rootsComboBox.getValue());
+            }
             pathTextField.setText(currentPath.get());
             FileOperationsUtil.listPathContent(fileList.getItems(), file, parentPath);
             fileList.sort();

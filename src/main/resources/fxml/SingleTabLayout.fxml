@@ -26,7 +26,5 @@
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
         </columnResizePolicy>
     </TableView>
-    <ToolBar fx:id="bottomToolBar" prefHeight="40.0" prefWidth="200.0">
-      <TextField fx:id="pathTextField" prefHeight="31.0" prefWidth="580.0" />
-    </ToolBar>
+   <TextField fx:id="pathTextField" prefHeight="31.0" prefWidth="580.0" />
 </VBox>
