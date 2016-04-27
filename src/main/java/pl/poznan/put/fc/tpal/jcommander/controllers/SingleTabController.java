@@ -137,7 +137,12 @@ public class SingleTabController implements Observer {
 
     private void initializeRootsComboBoxes() {
         ObservableList<String> rootsList = FXCollections.observableArrayList();
-        Arrays.stream(File.listRoots()).forEach(file -> rootsList.add(file.toString()));
+        Arrays.stream(File.listRoots()).forEach(file -> {
+            String name = file.toString();
+            if(!name.equals("A:\\")) {
+                rootsList.add(file.toString());
+            }
+        });
         rootsComboBox.setItems(rootsList);
         rootsComboBox.setValue(rootsList.get(0));
         setSizeLabel(rootsList.get(0));
@@ -235,6 +240,8 @@ public class SingleTabController implements Observer {
         nameColumn.setText(bundle.getString("fileList.columns.name"));
         sizeColumn.setText(bundle.getString("fileList.columns.size"));
         dateColumn.setText(bundle.getString("fileList.columns.date"));
+
+        setSizeLabel(rootsComboBox.getSelectionModel().getSelectedItem());
 
         try {
             FileOperationsUtil.listPathContent(fileList.getItems(), new File(currentPath), parentPath);
