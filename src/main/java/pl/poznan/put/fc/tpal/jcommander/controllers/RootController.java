@@ -4,16 +4,16 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
+import pl.poznan.put.fc.tpal.jcommander.tasks.WatchDirTask;
 import pl.poznan.put.fc.tpal.jcommander.utils.BundleUtil;
 import pl.poznan.put.fc.tpal.jcommander.views.SingleTabView;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class RootController  implements Observer {
+    private Map<Tab, SingleTabView> tabMap;
+
     @FXML
     private ArrayList<TabPane> tabPanes;
     @FXML
@@ -33,6 +33,8 @@ public class RootController  implements Observer {
 
     @FXML
     private void initialize() throws IOException {
+        tabMap = new HashMap<>();
+
         for(TabPane tabPane: tabPanes) {
             tabPane.getTabs().stream().forEach(tab ->tab.setClosable(false));
             setTabContent(tabPane.getTabs().get(0));
@@ -49,6 +51,16 @@ public class RootController  implements Observer {
                         e.printStackTrace();
                     }
                     tabPane.getSelectionModel().clearAndSelect(position);
+
+                    newTab.setOnClosed(event1 -> {
+                        try {
+                            WatchDirTask.getInstance().deleteObserver(tabMap.get(newTab).getController());
+                            WatchDirTask.getInstance().removePathStringProperty(tabMap.get(newTab).
+                                    getController().currentPathProperty());
+                        } catch(IOException e) {
+                            e.printStackTrace();
+                        }
+                    });
                 }
                 event.consume();
             });
@@ -95,7 +107,13 @@ public class RootController  implements Observer {
         borderPane.setCenter(singleTabView.getLayout());
         singleTabView.getLayout().prefWidthProperty().bind(borderPane.widthProperty());
         singleTabView.getLayout().prefHeightProperty().bind(borderPane.heightProperty());
+
+        SingleTabController controller = singleTabView.getController();
         tab.textProperty().bind(singleTabView.getController().currentDirectoryProperty());
+
+        tabMap.put(tab, singleTabView);
+        WatchDirTask.getInstance().addObserver(controller);
+        WatchDirTask.getInstance().addPathStringProperty(controller.currentPathProperty());
     }
 
     @Override

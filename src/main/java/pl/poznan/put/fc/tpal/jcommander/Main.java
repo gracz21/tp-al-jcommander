@@ -5,7 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import pl.poznan.put.fc.tpal.jcommander.controllers.RootController;
+import pl.poznan.put.fc.tpal.jcommander.tasks.WatchDirTask;
 import pl.poznan.put.fc.tpal.jcommander.utils.BundleUtil;
 
 import java.io.IOException;
@@ -13,6 +13,7 @@ import java.io.IOException;
 public class Main extends Application {
     private FXMLLoader loader;
     private static Stage primaryStage;
+    private Thread watcherThread;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -26,12 +27,28 @@ public class Main extends Application {
 
         BundleUtil.getInstance().addObserver(loader.getController());
 
+        watcherThread = new Thread(() -> {
+            try {
+                WatchDirTask.getInstance().call();
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+        watcherThread.start();
+
         //primaryStage.setMaximized(true);
         Main.primaryStage.show();
     }
 
     public static void main(String[] args) throws IOException {
         launch(args);
+    }
+
+    @Override
+    public void stop() throws Exception {
+        super.stop();
+        watcherThread.interrupt();
     }
 
     public static Stage getPrimaryStage() {

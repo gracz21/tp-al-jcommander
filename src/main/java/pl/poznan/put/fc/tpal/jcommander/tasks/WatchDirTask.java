@@ -1,15 +1,10 @@
 package pl.poznan.put.fc.tpal.jcommander.tasks;
 
-import javafx.beans.Observable;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.concurrent.Task;
 
 import java.io.IOException;
 import java.nio.file.*;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_DELETE;
@@ -18,46 +13,67 @@ import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
 /**
  * @author Kamil Walkowiak
  */
-public class WatchDirTask extends java.util.Observable implements ChangeListener {
-    private List<StringProperty> currentDirProperties;
+public class WatchDirTask extends java.util.Observable {
+    private static WatchDirTask instance;
+    private Map<StringProperty, WatchKey> watchKeyMap;
     private WatchService watcher;
-    private List<WatchKey> watchKeys;
 
-    public WatchDirTask(StringProperty leftDir, StringProperty rightDir) throws IOException {
-        this.currentDirProperties = new LinkedList<>();
-        this.currentDirProperties.add(leftDir);
-        this.currentDirProperties.add(rightDir);
-        this.watchKeys = new LinkedList<>();
-        this.watcher = FileSystems.getDefault().newWatchService();
-
-        for(StringProperty currentDirProperty: currentDirProperties) {
-            Path dir = Paths.get(currentDirProperty.get());
-            watchKeys.add(dir.register(watcher, ENTRY_CREATE, ENTRY_DELETE, ENTRY_MODIFY));
+    public static WatchDirTask getInstance() throws IOException {
+        if(instance == null) {
+            instance = new WatchDirTask();
         }
+        return instance;
     }
 
-    protected Void call() throws Exception {
-        currentDirProperties.stream().forEach(stringProperty -> stringProperty.addListener(this));
+    private WatchDirTask() throws IOException {
+        watchKeyMap = new HashMap<>();
+        this.watcher = FileSystems.getDefault().newWatchService();
+    }
 
+    public void call() throws Exception {
         while (true) {
             WatchKey key;
             try {
                 key = watcher.take();
             } catch (InterruptedException ex) {
-                return null;
+                break;
             }
 
-            boolean valid = key.reset();
-            if (!valid) {
+            key.pollEvents();
+            System.out.println("Cos");
+
+            watchKeyMap.entrySet().stream().filter(entry -> entry.getValue() == key).forEach(entry -> {
+                setChanged();
+                notifyObservers(entry.getKey());
+            });
+
+
+            if (!key.reset()) {
                 break;
             }
         }
-
-        return null;
     }
 
-    @Override
-    public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+    public void addPathStringProperty(StringProperty pathProperty) throws IOException {
+        Path dir = Paths.get(pathProperty.get());
+        WatchKey key = dir.register(watcher, ENTRY_CREATE, ENTRY_DELETE, ENTRY_MODIFY);
+        watchKeyMap.put(pathProperty, key);
 
+        pathProperty.addListener((observable) -> {
+            watchKeyMap.get(pathProperty).cancel();
+            Path newDir = Paths.get(pathProperty.get());
+            WatchKey newKey = null;
+            try {
+                newKey = newDir.register(watcher, ENTRY_CREATE, ENTRY_DELETE, ENTRY_MODIFY);
+            } catch(IOException e) {
+                e.printStackTrace();
+            }
+            watchKeyMap.put(pathProperty, newKey);
+        });
+    }
+
+    public void removePathStringProperty(StringProperty pathProperty) {
+        watchKeyMap.get(pathProperty).cancel();
+        watchKeyMap.remove(pathProperty);
     }
 }

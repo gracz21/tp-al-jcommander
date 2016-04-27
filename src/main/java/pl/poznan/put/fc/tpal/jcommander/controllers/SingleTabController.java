@@ -9,6 +9,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
+import org.apache.commons.io.FileUtils;
 import pl.poznan.put.fc.tpal.jcommander.comparators.NameComparator;
 import pl.poznan.put.fc.tpal.jcommander.comparators.SizeComparator;
 import pl.poznan.put.fc.tpal.jcommander.tasks.FileOperationTask;
@@ -95,6 +96,10 @@ public class SingleTabController implements Observer {
 
     public StringProperty currentDirectoryProperty() {
         return currentDirectory;
+    }
+
+    public StringProperty currentPathProperty() {
+        return currentPath;
     }
 
     private void initializeColumns() {
@@ -250,25 +255,42 @@ public class SingleTabController implements Observer {
             BooleanProperty isCanceledProperty = new SimpleBooleanProperty(false);
             DeleteFile deleteFiles = new DeleteFile(pathsToDelete, isCanceledProperty);
             new Thread(new FileOperationTask(deleteFiles, isCanceledProperty)).start();
+//            FileOperationsUtil.listPathContent(fileList.getItems(), new File(currentPath.get()), parentPath);
+//            fileList.sort();
         }
     }
 
     @Override
     public void update(Observable o, Object arg) {
-        ResourceBundle bundle = BundleUtil.getInstance().getBundle();
+        if(arg == null) {
+            ResourceBundle bundle = BundleUtil.getInstance().getBundle();
 
-        nameColumn.setText(bundle.getString("fileList.columns.name"));
-        sizeColumn.setText(bundle.getString("fileList.columns.size"));
-        dateColumn.setText(bundle.getString("fileList.columns.date"));
+            nameColumn.setText(bundle.getString("fileList.columns.name"));
+            sizeColumn.setText(bundle.getString("fileList.columns.size"));
+            dateColumn.setText(bundle.getString("fileList.columns.date"));
 
-        setSizeLabel(rootsComboBox.getSelectionModel().getSelectedItem());
+            setSizeLabel(rootsComboBox.getSelectionModel().getSelectedItem());
 
-        try {
-            FileOperationsUtil.listPathContent(fileList.getItems(), new File(currentPath.get()), parentPath);
-        } catch(IOException e) {
-            e.printStackTrace();
+            try {
+                FileOperationsUtil.listPathContent(fileList.getItems(), new File(currentPath.get()), parentPath);
+            } catch(IOException e) {
+                e.printStackTrace();
+            }
+            fileList.sort();
+        } else {
+            System.out.println(currentPath.get());
+            System.out.println(((StringProperty) arg).get());
+            System.out.println();
+            if(((StringProperty) arg).get().equals(currentPath.get())) {
+                try {
+                    System.out.println("In");
+                    FileOperationsUtil.listPathContent(fileList.getItems(), new File(currentPath.get()), parentPath);
+                } catch(IOException e) {
+                    e.printStackTrace();
+                }
+                fileList.sort();
+            }
         }
-        fileList.sort();
     }
 
     private static class NameColumnEntryCell extends TableCell<FileListEntry, NameColumnEntry> {
