@@ -9,7 +9,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
-import pl.poznan.put.fc.tpal.jcommander.fileOperations.FileOperationTask;
+import pl.poznan.put.fc.tpal.jcommander.comparators.SizeComparator;
+import pl.poznan.put.fc.tpal.jcommander.tasks.FileOperationTask;
 import pl.poznan.put.fc.tpal.jcommander.fileOperations.CopyFile;
 import pl.poznan.put.fc.tpal.jcommander.fileOperations.DeleteFile;
 import pl.poznan.put.fc.tpal.jcommander.fileOperations.FileOperation;
@@ -85,6 +86,7 @@ public class SingleTabController {
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("nameColumnEntry"));
         nameColumn.setCellFactory(param -> new NameColumnEntryCell());
         sizeColumn.setCellValueFactory(cellData -> cellData.getValue().fileSizeProperty());
+        sizeColumn.setComparator(new SizeComparator());
         dateColumn.setCellValueFactory(cellData -> cellData.getValue().formattedFileDateOfCreationProperty());
     }
 
