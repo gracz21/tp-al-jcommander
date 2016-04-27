@@ -51,14 +51,13 @@ public abstract class DialogUtil {
 
         ButtonType buttonReplace = new ButtonType(bundle.getString("replaceOption"));
         ButtonType buttonKeep = new ButtonType(bundle.getString("keepOption"));
-        ButtonType buttonSkip = new ButtonType(bundle.getString("skipOption"));
+        ButtonType buttonSkip = new ButtonType(bundle.getString("skipOption"), ButtonBar.ButtonData.CANCEL_CLOSE);
         ButtonType buttonReplaceAll = new ButtonType(bundle.getString("replaceAllOption"));
         ButtonType buttonKeepAll = new ButtonType(bundle.getString("keepAllOption"));
         ButtonType buttonSkipAll = new ButtonType(bundle.getString("skipAllOption"));
-        ButtonType buttonCancel = new ButtonType(bundle.getString("cancelOption"), ButtonBar.ButtonData.CANCEL_CLOSE);
 
         dialog.getButtonTypes().setAll(buttonReplace, buttonKeep, buttonSkip,
-                buttonReplaceAll, buttonKeepAll, buttonSkipAll, buttonCancel);
+                buttonReplaceAll, buttonKeepAll, buttonSkipAll);
         Optional<ButtonType> selectedOption = dialog.showAndWait();
 
         if(selectedOption.isPresent()) {
@@ -72,13 +71,11 @@ public abstract class DialogUtil {
                 result = ReplaceOptionsUtil.YES_ALL;
             } else if(selectedOption.get() == buttonKeepAll) {
                 result = ReplaceOptionsUtil.KEEP_ALL;
-            } else if(selectedOption.get() == buttonSkipAll) {
-                result = ReplaceOptionsUtil.NO_ALL;
             } else {
-                result = ReplaceOptionsUtil.CANCEL;
+                result = ReplaceOptionsUtil.NO_ALL;
             }
         } else {
-            result = ReplaceOptionsUtil.CANCEL;
+            result = ReplaceOptionsUtil.NO;
         }
 
         return result;

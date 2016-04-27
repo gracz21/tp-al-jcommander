@@ -20,6 +20,9 @@ import java.util.concurrent.FutureTask;
 
 import static java.nio.file.FileVisitResult.CONTINUE;
 import static java.nio.file.FileVisitResult.TERMINATE;
+import static pl.poznan.put.fc.tpal.jcommander.utils.ReplaceOptionsUtil.KEEP_ALL;
+import static pl.poznan.put.fc.tpal.jcommander.utils.ReplaceOptionsUtil.NO_ALL;
+import static pl.poznan.put.fc.tpal.jcommander.utils.ReplaceOptionsUtil.YES_ALL;
 
 /**
  * @author Kamil Walkowiak
@@ -28,7 +31,7 @@ public abstract class ChangeFileDirOperation extends FileOperation {
     Path targetPath;
     Path currentSourcePath;
     Path currentTargetPath;
-    Boolean replaceAll;
+    ReplaceOptionsUtil replaceAll;
 
     public ChangeFileDirOperation(List<Path> paths, BooleanProperty isCanceledProperty, Path targetPath) {
         super(paths, isCanceledProperty);
@@ -85,23 +88,29 @@ public abstract class ChangeFileDirOperation extends FileOperation {
                                 break;
                             case YES_ALL:
                                 changeFileDirOperation(file, path, true);
-                                replaceAll = Boolean.TRUE;
+                                replaceAll = YES_ALL;
                                 break;
                             case KEEP_ALL:
                                 keepBoth(file, path, fileName);
+                                replaceAll = KEEP_ALL;
                                 break;
                             case NO_ALL:
-                                replaceAll = Boolean.FALSE;
+                                replaceAll = NO_ALL;
                                 break;
-                            case CANCEL:
-                                return TERMINATE;
                         }
                     } catch(InterruptedException | ExecutionException e) {
                         e.printStackTrace();
                     }
                 } else {
-                    if(replaceAll) {
-                        changeFileDirOperation(file, path, true);
+                    switch(replaceAll) {
+                        case YES_ALL:
+                            changeFileDirOperation(file, path, true);
+                            break;
+                        case KEEP_ALL:
+                            keepBoth(file, path, fileName);
+                            break;
+                        case NO_ALL:
+                            break;
                     }
                 }
             }
