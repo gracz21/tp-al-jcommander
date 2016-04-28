@@ -62,9 +62,6 @@ public abstract class FileOperationsUtil {
             } else {
                 Desktop.getDesktop().open(pathContent);
             }
-        } else {
-            //TODO Dialog or nothing
-            System.out.println("WTF");
         }
 
         return fileListEntries;

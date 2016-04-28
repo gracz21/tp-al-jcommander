@@ -60,7 +60,11 @@ public class WatchDirTask extends java.util.Observable {
         watchKeyMap.put(pathProperty, key);
 
         pathProperty.addListener((observable) -> {
-            watchKeyMap.get(pathProperty).cancel();
+            WatchKey old = watchKeyMap.get(pathProperty);
+            watchKeyMap.remove(pathProperty);
+            if(!watchKeyMap.containsValue(old)) {
+                old.cancel();
+            }
             Path newDir = Paths.get(pathProperty.get());
             WatchKey newKey = null;
             try {

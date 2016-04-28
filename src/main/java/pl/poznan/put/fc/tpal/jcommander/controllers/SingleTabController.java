@@ -235,12 +235,14 @@ public class SingleTabController implements Observer {
 
     private void handleChangePath(File file) throws IOException {
         if(file.exists()) {
-            currentPath.set(file.getPath());
-            currentDirectory.set(file.getName());
-            if(currentDirectory.get().equals("")) {
-                currentDirectory.set(rootsComboBox.getValue());
+            if(file.isDirectory()) {
+                currentPath.set(file.getPath());
+                currentDirectory.set(file.getName());
+                if(currentDirectory.get().equals("")) {
+                    currentDirectory.set(rootsComboBox.getValue());
+                }
+                pathTextField.setText(currentPath.get());
             }
-            pathTextField.setText(currentPath.get());
             FileOperationsUtil.listPathContent(fileList.getItems(), file, parentPath);
             fileList.sort();
         }
