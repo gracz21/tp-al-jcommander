@@ -1,39 +1,56 @@
 package pl.poznan.put.fc.tpal.jcommander.controllers;
 
-import javafx.beans.property.*;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.*;
-import org.apache.commons.io.FileUtils;
-import pl.poznan.put.fc.tpal.jcommander.comparators.NameComparator;
-import pl.poznan.put.fc.tpal.jcommander.comparators.SizeComparator;
-import pl.poznan.put.fc.tpal.jcommander.tasks.FileOperationTask;
-import pl.poznan.put.fc.tpal.jcommander.fileOperations.changeFileDirOperations.CopyFile;
-import pl.poznan.put.fc.tpal.jcommander.fileOperations.DeleteFile;
-import pl.poznan.put.fc.tpal.jcommander.fileOperations.FileOperation;
-import pl.poznan.put.fc.tpal.jcommander.fileOperations.changeFileDirOperations.MoveFile;
-import pl.poznan.put.fc.tpal.jcommander.models.FileListEntry;
-import pl.poznan.put.fc.tpal.jcommander.models.NameColumnEntry;
-import pl.poznan.put.fc.tpal.jcommander.utils.BundleUtil;
-import pl.poznan.put.fc.tpal.jcommander.utils.DialogUtil;
-import pl.poznan.put.fc.tpal.jcommander.utils.FileOperationsUtil;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
+import java.util.ResourceBundle;
 import java.util.stream.Collectors;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.SelectionMode;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.TransferMode;
+import pl.poznan.put.fc.tpal.jcommander.utils.comparators.NameComparator;
+import pl.poznan.put.fc.tpal.jcommander.utils.comparators.SizeComparator;
+import pl.poznan.put.fc.tpal.jcommander.fileOperations.DeleteFile;
+import pl.poznan.put.fc.tpal.jcommander.fileOperations.FileOperation;
+import pl.poznan.put.fc.tpal.jcommander.fileOperations.changeFileDirOperations.CopyFile;
+import pl.poznan.put.fc.tpal.jcommander.fileOperations.changeFileDirOperations.MoveFile;
+import pl.poznan.put.fc.tpal.jcommander.models.FileListEntry;
+import pl.poznan.put.fc.tpal.jcommander.models.NameColumnEntry;
+import pl.poznan.put.fc.tpal.jcommander.tasks.FileOperationTask;
+import pl.poznan.put.fc.tpal.jcommander.utils.BundleUtil;
+import pl.poznan.put.fc.tpal.jcommander.utils.DialogUtil;
+import pl.poznan.put.fc.tpal.jcommander.utils.FileOperationsUtil;
+import pl.poznan.put.fc.tpal.jcommander.utils.SysUtils;
 
 /**
  * @author Kamil Walkowiak
  */
 public class SingleTabController implements Observer {
+
     private StringProperty currentPath;
     private StringProperty currentDirectory;
     private StringProperty parentPath;
@@ -60,21 +77,23 @@ public class SingleTabController implements Observer {
 
     @FXML
     private void initialize() throws IOException {
-        currentPath = new SimpleStringProperty("C:\\");
-        currentDirectory = new SimpleStringProperty("C:\\");
+        String userHomeDirectory = SysUtils.getUserHomeDirectory();
+        currentPath = new SimpleStringProperty(userHomeDirectory);
+        currentDirectory = new SimpleStringProperty(userHomeDirectory);
         parentPath = new SimpleStringProperty("");
 
-        pathTextField.setText("C:\\");
-        pathTextField.setOnKeyPressed(event ->{
-            if(event.getCode() == KeyCode.ENTER) {
+        rootButton.setText("r00t");
+
+        pathTextField.setText(userHomeDirectory);
+        pathTextField.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
                 try {
                     handleChangePath(new File(pathTextField.getText()));
-                } catch(IOException e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
-        }
-        );
+        });
 
         initializeColumns();
         initializeFileLists();
@@ -84,7 +103,7 @@ public class SingleTabController implements Observer {
 
     @FXML
     private void handleUpButton() throws IOException {
-        if(!parentPath.get().equals("")) {
+        if (!parentPath.get().equals("")) {
             handleChangePath(new File(parentPath.get()));
         }
     }
@@ -112,56 +131,51 @@ public class SingleTabController implements Observer {
     }
 
     private void initializeFileLists() throws IOException {
-        fileList.setItems(FileOperationsUtil.listPathContent(FXCollections.observableArrayList(), new File(currentPath.get()),
-                parentPath));
+        fileList.setItems(FileOperationsUtil
+                .listPathContent(FXCollections.observableArrayList(), new File(currentPath.get()), parentPath));
         fileList.setOnMousePressed(event -> {
-            if(event.isPrimaryButtonDown() && event.getClickCount() == 2) {
+            if (event.isPrimaryButtonDown() && event.getClickCount() == 2) {
                 try {
                     FileListEntry fileListEntry = fileList.getSelectionModel().getSelectedItem();
-                    if(fileListEntry != null) {
+                    if (fileListEntry != null) {
                         handleChangePath(fileListEntry.getFile());
                     }
-                } catch(IOException e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         });
 
         fileList.setOnKeyPressed(event -> {
-            if(event.getCode() == KeyCode.ENTER) {
+            if (event.getCode() == KeyCode.ENTER) {
                 try {
                     FileListEntry fileListEntry = fileList.getSelectionModel().getSelectedItem();
-                    if(fileListEntry != null) {
+                    if (fileListEntry != null) {
                         handleChangePath(fileListEntry.getFile());
                     }
-                } catch(IOException e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
-            if(event.getCode() == KeyCode.DELETE) {
+            if (event.getCode() == KeyCode.DELETE) {
                 try {
-                    if(fileList.getSelectionModel().getSelectedCells().size() != 0) {
+                    if (fileList.getSelectionModel().getSelectedCells().size() != 0) {
                         handleDeleteAction();
                     }
-                } catch(IOException e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         });
 
         fileList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        fileList.getSortOrder().add(sizeColumn);
+        fileList.getSortOrder().add(nameColumn);
         fileList.sort();
     }
 
     private void initializeRootsComboBoxes() {
         ObservableList<String> rootsList = FXCollections.observableArrayList();
-        Arrays.stream(File.listRoots()).forEach(file -> {
-            String name = file.toString();
-            if(!name.equals("A:\\")) {
-                rootsList.add(file.toString());
-            }
-        });
+        Arrays.stream(File.listRoots()).forEach(file -> rootsList.add(file.toString()));
         rootsComboBox.setItems(rootsList);
         rootsComboBox.setValue(rootsList.get(0));
         setSizeLabel(rootsList.get(0));
@@ -171,7 +185,7 @@ public class SingleTabController implements Observer {
             try {
                 handleChangePath(new File(root));
                 setSizeLabel(root);
-            } catch(IOException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         });
@@ -182,7 +196,7 @@ public class SingleTabController implements Observer {
 
         fileList.setOnDragDetected(event -> {
             List<FileListEntry> selected = fileList.getSelectionModel().getSelectedItems();
-            if(selected.size() != 0) {
+            if (selected.size() != 0) {
                 Dragboard db = fileList.startDragAndDrop(TransferMode.COPY_OR_MOVE);
                 ClipboardContent content = new ClipboardContent();
                 content.putFiles(selected.stream().map(FileListEntry::getFile).collect(Collectors.toList()));
@@ -192,7 +206,7 @@ public class SingleTabController implements Observer {
         });
 
         fileList.setOnDragOver(event -> {
-            if (event.getGestureSource() != fileList && event.getDragboard().hasFiles() && canBeDropped){
+            if (event.getGestureSource() != fileList && event.getDragboard().hasFiles() && canBeDropped) {
                 event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
             }
             event.consume();
@@ -208,7 +222,7 @@ public class SingleTabController implements Observer {
                 BooleanProperty isCanceledProperty = new SimpleBooleanProperty(false);
 
                 FileOperation fileOperation;
-                if(event.getTransferMode() == TransferMode.COPY) {
+                if (event.getTransferMode() == TransferMode.COPY) {
                     fileOperation = new CopyFile(paths, isCanceledProperty, Paths.get(currentPath.get()));
                 } else {
                     fileOperation = new MoveFile(paths, isCanceledProperty, Paths.get(currentPath.get()));
@@ -216,7 +230,7 @@ public class SingleTabController implements Observer {
 
                 try {
                     new Thread(new FileOperationTask(fileOperation, isCanceledProperty)).start();
-                } catch(IOException e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
                 success = true;
@@ -229,16 +243,17 @@ public class SingleTabController implements Observer {
     private void setSizeLabel(String root) {
         ResourceBundle bundle = BundleUtil.getInstance().getBundle();
 
-        sizeLabel.setText(FileOperationsUtil.getRootFreeSpace(root) + " k " + bundle.getString("from") + " " +
-            FileOperationsUtil.getRootSpace(root) + " k " + bundle.getString("free"));
+        sizeLabel.setText(
+                FileOperationsUtil.getRootFreeSpace(root) + " k " + bundle.getString("from") + " " + FileOperationsUtil
+                        .getRootSpace(root) + " k " + bundle.getString("free"));
     }
 
     private void handleChangePath(File file) throws IOException {
-        if(file.exists()) {
-            if(file.isDirectory()) {
+        if (file.exists()) {
+            if (file.isDirectory()) {
                 currentPath.set(file.getPath());
                 currentDirectory.set(file.getName());
-                if(currentDirectory.get().equals("")) {
+                if (currentDirectory.get().equals("")) {
                     currentDirectory.set(rootsComboBox.getValue());
                 }
                 pathTextField.setText(currentPath.get());
@@ -249,7 +264,7 @@ public class SingleTabController implements Observer {
     }
 
     private void handleDeleteAction() throws IOException {
-        if(DialogUtil.deleteDialog()) {
+        if (DialogUtil.deleteDialog()) {
             ObservableList<FileListEntry> fileListEntries = fileList.getSelectionModel().getSelectedItems();
             List<Path> pathsToDelete = fileListEntries.stream().
                     map(fileListEntry -> Paths.get(fileListEntry.getFile().getPath())).collect(Collectors.toList());
@@ -264,7 +279,7 @@ public class SingleTabController implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-        if(arg == null) {
+        if (arg == null) {
             ResourceBundle bundle = BundleUtil.getInstance().getBundle();
 
             nameColumn.setText(bundle.getString("fileList.columns.name"));
@@ -275,7 +290,7 @@ public class SingleTabController implements Observer {
 
             try {
                 FileOperationsUtil.listPathContent(fileList.getItems(), new File(currentPath.get()), parentPath);
-            } catch(IOException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
             fileList.sort();
@@ -283,11 +298,11 @@ public class SingleTabController implements Observer {
             System.out.println(currentPath.get());
             System.out.println(((StringProperty) arg).get());
             System.out.println();
-            if(((StringProperty) arg).get().equals(currentPath.get())) {
+            if (((StringProperty) arg).get().equals(currentPath.get())) {
                 try {
                     System.out.println("In");
                     FileOperationsUtil.listPathContent(fileList.getItems(), new File(currentPath.get()), parentPath);
-                } catch(IOException e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
                 fileList.sort();
@@ -296,6 +311,7 @@ public class SingleTabController implements Observer {
     }
 
     private static class NameColumnEntryCell extends TableCell<FileListEntry, NameColumnEntry> {
+
         @Override
         public void updateItem(NameColumnEntry item, boolean empty) {
             super.updateItem(item, empty);

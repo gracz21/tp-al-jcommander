@@ -1,5 +1,6 @@
 package pl.poznan.put.fc.tpal.jcommander;
 
+import java.io.IOException;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -8,16 +9,14 @@ import javafx.stage.Stage;
 import pl.poznan.put.fc.tpal.jcommander.tasks.WatchDirTask;
 import pl.poznan.put.fc.tpal.jcommander.utils.BundleUtil;
 
-import java.io.IOException;
-
 public class Main extends Application {
-    private FXMLLoader loader;
+
     private static Stage primaryStage;
     private Thread watcherThread;
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
-        loader = new FXMLLoader(getClass().getResource("/fxml/RootLayout.fxml"));
+    public void start(Stage primaryStage) throws Exception {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/RootLayout.fxml"));
         loader.setResources(BundleUtil.getInstance().getBundle());
         Parent root = loader.load();
 
@@ -30,7 +29,7 @@ public class Main extends Application {
         watcherThread = new Thread(() -> {
             try {
                 WatchDirTask.getInstance().call();
-            } catch(Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         });

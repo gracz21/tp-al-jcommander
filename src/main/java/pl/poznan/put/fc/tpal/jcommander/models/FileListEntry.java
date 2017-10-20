@@ -1,35 +1,34 @@
 package pl.poznan.put.fc.tpal.jcommander.models;
 
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import pl.poznan.put.fc.tpal.jcommander.utils.BundleUtil;
-
-import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
 import java.text.DateFormat;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javax.swing.Icon;
+import pl.poznan.put.fc.tpal.jcommander.utils.BundleUtil;
 
 /**
  * @author Kamil Walkowiak
  */
 public class FileListEntry {
+
     private NameColumnEntry nameColumnEntry;
     private StringProperty fileSize;
     private StringProperty formattedFileDateOfCreation;
     private FileTime fileDateOfCreation;
     private File file;
 
-
     public FileListEntry(File file, Icon swingIcon) throws IOException {
         this.file = file;
 
-        this.nameColumnEntry = new NameColumnEntry(file.getName(), swingIcon);
+        this.nameColumnEntry = new NameColumnEntry(file.getName(), file.isDirectory(), swingIcon);
 
         String size;
-        if(file.isFile()) {
+        if (file.isFile()) {
             size = Long.toString(file.length());
         } else {
             size = "<DIR>";
@@ -39,7 +38,8 @@ public class FileListEntry {
         BasicFileAttributes attr = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
         this.fileDateOfCreation = attr.creationTime();
 
-        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT, BundleUtil.getInstance().getCurrentLocale());
+        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT,
+                BundleUtil.getInstance().getCurrentLocale());
         this.formattedFileDateOfCreation = new SimpleStringProperty(df.format(fileDateOfCreation.toMillis()));
     }
 

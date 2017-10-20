@@ -1,4 +1,4 @@
-package pl.poznan.put.fc.tpal.jcommander.comparators;
+package pl.poznan.put.fc.tpal.jcommander.utils.comparators;
 
 import java.util.Comparator;
 

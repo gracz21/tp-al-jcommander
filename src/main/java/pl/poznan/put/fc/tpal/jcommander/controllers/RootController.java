@@ -1,21 +1,36 @@
 package pl.poznan.put.fc.tpal.jcommander.controllers;
 
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
+import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.RadioMenuItem;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.BorderPane;
 import pl.poznan.put.fc.tpal.jcommander.tasks.WatchDirTask;
 import pl.poznan.put.fc.tpal.jcommander.utils.BundleUtil;
 import pl.poznan.put.fc.tpal.jcommander.views.SingleTabView;
 
-import java.io.IOException;
-import java.util.*;
+public class RootController implements Observer {
 
-public class RootController  implements Observer {
     private Map<Tab, SingleTabView> tabMap;
 
     @FXML
-    private ArrayList<TabPane> tabPanes;
+    private TabPane rightTabPane;
+    @FXML
+    private TabPane leftTabPane;
+    @FXML
+    private ToggleGroup language;
     @FXML
     private Menu fileMenu;
     @FXML
@@ -35,19 +50,20 @@ public class RootController  implements Observer {
     private void initialize() throws IOException {
         tabMap = new HashMap<>();
 
-        for(TabPane tabPane: tabPanes) {
-            tabPane.getTabs().stream().forEach(tab ->tab.setClosable(false));
+        Collection<TabPane> tabPanes = Arrays.asList(leftTabPane, rightTabPane);
+        for (TabPane tabPane : tabPanes) {
+            tabPane.getTabs().forEach(tab -> tab.setClosable(false));
             setTabContent(tabPane.getTabs().get(0));
 
             Tab addNewTab = tabPane.getTabs().get(1);
             tabPane.setOnMouseClicked(event -> {
-                if(addNewTab.isSelected()) {
+                if (addNewTab.isSelected()) {
                     Tab newTab = createTab();
                     int position = tabPane.getTabs().size() - 1;
                     tabPane.getTabs().add(position, newTab);
                     try {
                         setTabContent(newTab);
-                    } catch(IOException e) {
+                    } catch (IOException e) {
                         e.printStackTrace();
                     }
                     tabPane.getSelectionModel().clearAndSelect(position);
@@ -57,7 +73,7 @@ public class RootController  implements Observer {
                             WatchDirTask.getInstance().deleteObserver(tabMap.get(newTab).getController());
                             WatchDirTask.getInstance().removePathStringProperty(tabMap.get(newTab).
                                     getController().currentPathProperty());
-                        } catch(IOException e) {
+                        } catch (IOException e) {
                             e.printStackTrace();
                         }
                     });
@@ -66,7 +82,7 @@ public class RootController  implements Observer {
             });
         }
 
-        if(BundleUtil.getInstance().getCurrentLocale().getLanguage().equals("en")) {
+        if (BundleUtil.getInstance().getCurrentLocale().getLanguage().equals("en")) {
             changeToEnglish.setSelected(true);
         } else {
             changeToPolish.setSelected(true);
@@ -81,7 +97,7 @@ public class RootController  implements Observer {
     @FXML
     private void handleMenuToEnglish() {
         BundleUtil bundleUtil = BundleUtil.getInstance();
-        if(!bundleUtil.getCurrentLocale().getLanguage().equals("en")) {
+        if (!bundleUtil.getCurrentLocale().getLanguage().equals("en")) {
             BundleUtil.getInstance().setCurrentLocale("en");
         }
     }
@@ -89,7 +105,7 @@ public class RootController  implements Observer {
     @FXML
     private void handleMenuToPolish() {
         BundleUtil bundleUtil = BundleUtil.getInstance();
-        if(!bundleUtil.getCurrentLocale().getLanguage().equals("pl")) {
+        if (!bundleUtil.getCurrentLocale().getLanguage().equals("pl")) {
             BundleUtil.getInstance().setCurrentLocale("pl");
         }
     }
