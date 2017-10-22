@@ -8,3 +8,5 @@ TODO:
 - [ ] case insensitive compare (+ settings)
 - [ ] F1-F12 and other help for current source
 - [x] ..
+
+Think about https://github.com/cfg4j/cfg4j
