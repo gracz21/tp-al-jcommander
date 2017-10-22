@@ -1,6 +1,6 @@
-package pl.poznan.put.fc.tpal.jcommander.utils.comparators;
+package pl.poznan.put.fc.tpal.jcommander.source.filesystem.comparators;
 
-import pl.poznan.put.fc.tpal.jcommander.models.NameColumnEntry;
+import pl.poznan.put.fc.tpal.jcommander.source.filesystem.models.NameColumnEntry;
 
 import java.util.Comparator;
 

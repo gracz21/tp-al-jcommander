@@ -1,4 +1,4 @@
-package pl.poznan.put.fc.tpal.jcommander.fileOperations.changeFileDirOperations;
+package pl.poznan.put.fc.tpal.jcommander.source.filesystem.fileOperations.changeFileDirOperations;
 
 import static java.nio.file.FileVisitResult.CONTINUE;
 import static java.nio.file.FileVisitResult.TERMINATE;
@@ -18,7 +18,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
-import pl.poznan.put.fc.tpal.jcommander.fileOperations.FileOperation;
+import pl.poznan.put.fc.tpal.jcommander.source.filesystem.fileOperations.FileOperation;
 import pl.poznan.put.fc.tpal.jcommander.utils.BundleUtil;
 import pl.poznan.put.fc.tpal.jcommander.utils.DialogUtil;
 import pl.poznan.put.fc.tpal.jcommander.utils.ReplaceOptionsUtil;

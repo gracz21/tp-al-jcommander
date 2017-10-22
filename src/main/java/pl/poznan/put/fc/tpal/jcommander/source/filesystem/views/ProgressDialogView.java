@@ -1,4 +1,4 @@
-package pl.poznan.put.fc.tpal.jcommander.views;
+package pl.poznan.put.fc.tpal.jcommander.source.filesystem.views;
 
 import java.io.IOException;
 import java.util.ResourceBundle;

@@ -1,4 +1,4 @@
-package pl.poznan.put.fc.tpal.jcommander.models;
+package pl.poznan.put.fc.tpal.jcommander.source.filesystem.models;
 
 import java.awt.image.BufferedImage;
 import javafx.beans.property.SimpleStringProperty;

@@ -1,4 +1,4 @@
-package pl.poznan.put.fc.tpal.jcommander.fileOperations.changeFileDirOperations;
+package pl.poznan.put.fc.tpal.jcommander.source.filesystem.fileOperations.changeFileDirOperations;
 
 import javafx.beans.property.BooleanProperty;
 import org.apache.commons.io.FilenameUtils;

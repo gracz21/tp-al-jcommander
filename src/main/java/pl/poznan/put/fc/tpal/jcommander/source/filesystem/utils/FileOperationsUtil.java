@@ -1,4 +1,4 @@
-package pl.poznan.put.fc.tpal.jcommander.utils;
+package pl.poznan.put.fc.tpal.jcommander.source.filesystem.utils;
 
 import java.awt.Desktop;
 import java.io.File;
@@ -8,11 +8,11 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javafx.beans.property.StringProperty;
+
 import javafx.collections.ObservableList;
 import javax.swing.Icon;
 import javax.swing.filechooser.FileSystemView;
-import pl.poznan.put.fc.tpal.jcommander.models.FileListEntry;
+import pl.poznan.put.fc.tpal.jcommander.source.filesystem.models.FileListEntry;
 
 /**
  * @author Kamil Walkowiak
@@ -46,17 +46,18 @@ public abstract class FileOperationsUtil {
     }
 
     public static ObservableList<FileListEntry> listPathContent(ObservableList<FileListEntry> fileListEntries,
-            File pathContent, StringProperty parentPath) throws IOException {
+            File pathContent) throws IOException {
         if (pathContent.exists()) {
             if (pathContent.isDirectory()) {
                 File[] files = pathContent.listFiles(file -> !file.isHidden() && Files.isReadable(file.toPath()));
                 fileListEntries.clear();
-                if (pathContent.getParent() != null) {
-                    parentPath.set(pathContent.getParent());
-                }
                 for (File file : files) {
                     Icon icon = FileSystemView.getFileSystemView().getSystemIcon(file);
                     fileListEntries.add(new FileListEntry(file, icon));
+                }
+                if (pathContent.getParent() != null) {
+                    Icon icon = FileSystemView.getFileSystemView().getSystemIcon(pathContent);
+                    fileListEntries.add(new FileListEntry(new File(".."), icon));
                 }
             } else {
                 Desktop.getDesktop().open(pathContent);
@@ -64,4 +65,9 @@ public abstract class FileOperationsUtil {
         }
         return fileListEntries;
     }
+
+    public static String getUserHomeDirectory() {
+        return System.getProperty("user.home");
+    }
+
 }

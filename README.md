@@ -4,5 +4,7 @@ File explorer written in JavaFX as a project on Programming Technologies - Local
 
 TODO:
 
-- [ ] show hidden
-- [ ] case insensitive compare
+- [ ] show hidden (+ settings)
+- [ ] case insensitive compare (+ settings)
+- [ ] F1-F12 and other help for current source
+- [x] ..

@@ -1,30 +1,39 @@
 package pl.poznan.put.fc.tpal.jcommander;
 
-import java.io.IOException;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.stage.Stage;
-import pl.poznan.put.fc.tpal.jcommander.tasks.WatchDirTask;
-import pl.poznan.put.fc.tpal.jcommander.utils.BundleUtil;
+import pl.poznan.put.fc.tpal.jcommander.config.Props;
+import pl.poznan.put.fc.tpal.jcommander.source.filesystem.tasks.WatchDirTask;
+import pl.poznan.put.fc.tpal.jcommander.utils.DialogUtil;
+import pl.poznan.put.fc.tpal.jcommander.utils.WindowsUtils;
+
+import java.io.IOException;
 
 public class Main extends Application {
 
     private static Stage primaryStage;
     private Thread watcherThread;
 
+    public static void main(String[] args) throws IOException {
+        Props.loadPreferences();
+        launch(args);
+    }
+
     @Override
     public void start(Stage primaryStage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/RootLayout.fxml"));
-        loader.setResources(BundleUtil.getInstance().getBundle());
-        Parent root = loader.load();
-
         primaryStage.setTitle("JCommander");
-        primaryStage.setScene(new Scene(root));
-        Main.primaryStage = primaryStage;
+        primaryStage.setScene(WindowsUtils.loadScene());
 
-        BundleUtil.getInstance().addObserver(loader.getController());
+        primaryStage.setWidth(Props.width);
+        primaryStage.setHeight(Props.height);
+
+        if (Props.x >= 0 && Props.y >= 0) {
+            primaryStage.setX(Props.x);
+            primaryStage.setY(Props.y);
+        }
+
+        Main.primaryStage = primaryStage;
 
         watcherThread = new Thread(() -> {
             try {
@@ -37,17 +46,22 @@ public class Main extends Application {
         watcherThread.start();
 
         //primaryStage.setMaximized(true);
-        Main.primaryStage.show();
-    }
+        primaryStage.show();
 
-    public static void main(String[] args) throws IOException {
-        launch(args);
+        if (!Props.isStorageOk) {
+            DialogUtil.propsAlert();
+        }
     }
 
     @Override
     public void stop() throws Exception {
         super.stop();
         watcherThread.interrupt();
+        Props.width = primaryStage.getWidth();
+        Props.height = primaryStage.getHeight();
+        Props.x = primaryStage.getX();
+        Props.y = primaryStage.getY();
+        Props.savePreferences();
     }
 
     public static Stage getPrimaryStage() {

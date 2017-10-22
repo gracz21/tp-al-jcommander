@@ -1,14 +1,11 @@
-package pl.poznan.put.fc.tpal.jcommander.controllers;
+package pl.poznan.put.fc.tpal.jcommander.source.filesystem.controllers;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.ResourceBundle;
+import java.util.*;
+import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -32,19 +29,18 @@ import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.TransferMode;
-import pl.poznan.put.fc.tpal.jcommander.utils.comparators.NameComparator;
-import pl.poznan.put.fc.tpal.jcommander.utils.comparators.SizeComparator;
-import pl.poznan.put.fc.tpal.jcommander.fileOperations.DeleteFile;
-import pl.poznan.put.fc.tpal.jcommander.fileOperations.FileOperation;
-import pl.poznan.put.fc.tpal.jcommander.fileOperations.changeFileDirOperations.CopyFile;
-import pl.poznan.put.fc.tpal.jcommander.fileOperations.changeFileDirOperations.MoveFile;
-import pl.poznan.put.fc.tpal.jcommander.models.FileListEntry;
-import pl.poznan.put.fc.tpal.jcommander.models.NameColumnEntry;
-import pl.poznan.put.fc.tpal.jcommander.tasks.FileOperationTask;
+import pl.poznan.put.fc.tpal.jcommander.source.filesystem.comparators.NameComparator;
+import pl.poznan.put.fc.tpal.jcommander.source.filesystem.comparators.SizeComparator;
+import pl.poznan.put.fc.tpal.jcommander.source.filesystem.fileOperations.DeleteFile;
+import pl.poznan.put.fc.tpal.jcommander.source.filesystem.fileOperations.FileOperation;
+import pl.poznan.put.fc.tpal.jcommander.source.filesystem.fileOperations.changeFileDirOperations.CopyFile;
+import pl.poznan.put.fc.tpal.jcommander.source.filesystem.fileOperations.changeFileDirOperations.MoveFile;
+import pl.poznan.put.fc.tpal.jcommander.source.filesystem.models.FileListEntry;
+import pl.poznan.put.fc.tpal.jcommander.source.filesystem.models.NameColumnEntry;
+import pl.poznan.put.fc.tpal.jcommander.source.filesystem.tasks.FileOperationTask;
 import pl.poznan.put.fc.tpal.jcommander.utils.BundleUtil;
 import pl.poznan.put.fc.tpal.jcommander.utils.DialogUtil;
-import pl.poznan.put.fc.tpal.jcommander.utils.FileOperationsUtil;
-import pl.poznan.put.fc.tpal.jcommander.utils.SysUtils;
+import pl.poznan.put.fc.tpal.jcommander.source.filesystem.utils.FileOperationsUtil;
 
 /**
  * @author Kamil Walkowiak
@@ -53,8 +49,15 @@ public class SingleTabController implements Observer {
 
     private StringProperty currentPath;
     private StringProperty currentDirectory;
-    private StringProperty parentPath;
     private boolean canBeDropped;
+
+    public StringProperty currentDirectoryProperty() {
+        return currentDirectory;
+    }
+
+    public StringProperty currentPathProperty() {
+        return currentPath;
+    }
 
     @FXML
     private TableView<FileListEntry> fileList;
@@ -77,10 +80,9 @@ public class SingleTabController implements Observer {
 
     @FXML
     private void initialize() throws IOException {
-        String userHomeDirectory = SysUtils.getUserHomeDirectory();
+        String userHomeDirectory = FileOperationsUtil.getUserHomeDirectory();
         currentPath = new SimpleStringProperty(userHomeDirectory);
         currentDirectory = new SimpleStringProperty(userHomeDirectory);
-        parentPath = new SimpleStringProperty("");
 
         rootButton.setText("r00t");
 
@@ -93,32 +95,13 @@ public class SingleTabController implements Observer {
                     e.printStackTrace();
                 }
             }
+            //TODO tab - autocomplete
         });
 
         initializeColumns();
         initializeFileLists();
         initializeRootsComboBoxes();
         setupDragAndDrop();
-    }
-
-    @FXML
-    private void handleUpButton() throws IOException {
-        if (!parentPath.get().equals("")) {
-            handleChangePath(new File(parentPath.get()));
-        }
-    }
-
-    @FXML
-    private void handleRootButton() throws IOException {
-        handleChangePath(new File(rootsComboBox.getValue()));
-    }
-
-    public StringProperty currentDirectoryProperty() {
-        return currentDirectory;
-    }
-
-    public StringProperty currentPathProperty() {
-        return currentPath;
     }
 
     private void initializeColumns() {
@@ -132,13 +115,18 @@ public class SingleTabController implements Observer {
 
     private void initializeFileLists() throws IOException {
         fileList.setItems(FileOperationsUtil
-                .listPathContent(FXCollections.observableArrayList(), new File(currentPath.get()), parentPath));
+                .listPathContent(FXCollections.observableArrayList(), new File(currentPath.get())));
         fileList.setOnMousePressed(event -> {
             if (event.isPrimaryButtonDown() && event.getClickCount() == 2) {
                 try {
                     FileListEntry fileListEntry = fileList.getSelectionModel().getSelectedItem();
                     if (fileListEntry != null) {
-                        handleChangePath(fileListEntry.getFile());
+                        if (fileListEntry.getNameColumnEntry().getFileName().equals("..")) {
+                            File file = new File(currentPath.get()).getParentFile();
+                            handleChangePath(file);
+                        } else {
+                            handleChangePath(fileListEntry.getFile());
+                        }
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -166,11 +154,32 @@ public class SingleTabController implements Observer {
                     e.printStackTrace();
                 }
             }
+            if (event.getCode() == KeyCode.BACK_SPACE) {
+                try {
+                    handleUpButton();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         });
 
         fileList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         fileList.getSortOrder().add(nameColumn);
         fileList.sort();
+    }
+
+    private void handleDeleteAction() throws IOException {
+        if (DialogUtil.deleteDialog()) {
+            ObservableList<FileListEntry> fileListEntries = fileList.getSelectionModel().getSelectedItems();
+            List<Path> pathsToDelete = fileListEntries.stream().
+                    map(fileListEntry -> Paths.get(fileListEntry.getFile().getPath())).collect(Collectors.toList());
+
+            BooleanProperty isCanceledProperty = new SimpleBooleanProperty(false);
+            DeleteFile deleteFiles = new DeleteFile(pathsToDelete, isCanceledProperty);
+            new Thread(new FileOperationTask(deleteFiles, isCanceledProperty)).start();
+//            FileOperationsUtil.listPathContent(fileList.getItems(), new File(currentPath.get()), parentPath);
+//            fileList.sort();
+        }
     }
 
     private void initializeRootsComboBoxes() {
@@ -240,12 +249,19 @@ public class SingleTabController implements Observer {
         });
     }
 
-    private void setSizeLabel(String root) {
-        ResourceBundle bundle = BundleUtil.getInstance().getBundle();
+    @FXML
+    private void handleUpButton() throws IOException {
+        if (!currentPath.get().equals("")) {
+            File file = new File(currentPath.get());
+            if (file.getParent() != null) {
+                handleChangePath(new File(file.getParent()));
+            }
+        }
+    }
 
-        sizeLabel.setText(
-                FileOperationsUtil.getRootFreeSpace(root) + " k " + bundle.getString("from") + " " + FileOperationsUtil
-                        .getRootSpace(root) + " k " + bundle.getString("free"));
+    @FXML
+    private void handleRootButton() throws IOException {
+        handleChangePath(new File(rootsComboBox.getValue()));
     }
 
     private void handleChangePath(File file) throws IOException {
@@ -257,23 +273,9 @@ public class SingleTabController implements Observer {
                     currentDirectory.set(rootsComboBox.getValue());
                 }
                 pathTextField.setText(currentPath.get());
+                FileOperationsUtil.listPathContent(fileList.getItems(), file);
+                fileList.sort();
             }
-            FileOperationsUtil.listPathContent(fileList.getItems(), file, parentPath);
-            fileList.sort();
-        }
-    }
-
-    private void handleDeleteAction() throws IOException {
-        if (DialogUtil.deleteDialog()) {
-            ObservableList<FileListEntry> fileListEntries = fileList.getSelectionModel().getSelectedItems();
-            List<Path> pathsToDelete = fileListEntries.stream().
-                    map(fileListEntry -> Paths.get(fileListEntry.getFile().getPath())).collect(Collectors.toList());
-
-            BooleanProperty isCanceledProperty = new SimpleBooleanProperty(false);
-            DeleteFile deleteFiles = new DeleteFile(pathsToDelete, isCanceledProperty);
-            new Thread(new FileOperationTask(deleteFiles, isCanceledProperty)).start();
-//            FileOperationsUtil.listPathContent(fileList.getItems(), new File(currentPath.get()), parentPath);
-//            fileList.sort();
         }
     }
 
@@ -289,7 +291,7 @@ public class SingleTabController implements Observer {
             setSizeLabel(rootsComboBox.getSelectionModel().getSelectedItem());
 
             try {
-                FileOperationsUtil.listPathContent(fileList.getItems(), new File(currentPath.get()), parentPath);
+                FileOperationsUtil.listPathContent(fileList.getItems(), new File(currentPath.get()));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -301,13 +303,21 @@ public class SingleTabController implements Observer {
             if (((StringProperty) arg).get().equals(currentPath.get())) {
                 try {
                     System.out.println("In");
-                    FileOperationsUtil.listPathContent(fileList.getItems(), new File(currentPath.get()), parentPath);
+                    FileOperationsUtil.listPathContent(fileList.getItems(), new File(currentPath.get()));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 fileList.sort();
             }
         }
+    }
+
+    private void setSizeLabel(String root) {
+        ResourceBundle bundle = BundleUtil.getInstance().getBundle();
+
+        sizeLabel.setText(
+                FileOperationsUtil.getRootFreeSpace(root) + " Kb " + bundle.getString("from") + " " + FileOperationsUtil
+                        .getRootSpace(root) + " Kb " + bundle.getString("free"));
     }
 
     private static class NameColumnEntryCell extends TableCell<FileListEntry, NameColumnEntry> {

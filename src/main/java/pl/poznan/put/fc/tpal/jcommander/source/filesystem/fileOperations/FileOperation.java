@@ -1,4 +1,4 @@
-package pl.poznan.put.fc.tpal.jcommander.fileOperations;
+package pl.poznan.put.fc.tpal.jcommander.source.filesystem.fileOperations;
 
 import javafx.beans.property.*;
 

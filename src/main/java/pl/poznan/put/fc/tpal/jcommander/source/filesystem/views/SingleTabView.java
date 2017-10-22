@@ -1,10 +1,10 @@
-package pl.poznan.put.fc.tpal.jcommander.views;
+package pl.poznan.put.fc.tpal.jcommander.source.filesystem.views;
 
 import java.io.IOException;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import pl.poznan.put.fc.tpal.jcommander.controllers.SingleTabController;
+import pl.poznan.put.fc.tpal.jcommander.source.filesystem.controllers.SingleTabController;
 import pl.poznan.put.fc.tpal.jcommander.utils.BundleUtil;
 
 /**
@@ -16,7 +16,7 @@ public class SingleTabView {
     private SingleTabController controller;
 
     public SingleTabView() throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/SingleTabLayout.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/filesystem/SingleTabLayout.fxml"));
         loader.setResources(BundleUtil.getInstance().getBundle());
         layout = loader.load();
 
