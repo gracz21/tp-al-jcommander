@@ -15,14 +15,15 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
  * @author Kamil Walkowiak
  */
 public class MoveFile extends ChangeFileDirOperation {
+
     public MoveFile(List<Path> paths, BooleanProperty isCanceledProperty, Path targetPath) {
         super(paths, isCanceledProperty, targetPath);
     }
 
     @Override
     public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-        if(!isCanceledProperty.get()) {
-            if(exc == null) {
+        if (!isCanceledProperty.get()) {
+            if (exc == null) {
                 Files.delete(dir);
             }
             return CONTINUE;
@@ -33,7 +34,7 @@ public class MoveFile extends ChangeFileDirOperation {
 
     @Override
     void changeFileDirOperation(Path file, Path destination, boolean replace) throws IOException {
-        if(replace) {
+        if (replace) {
             Files.move(file, destination, REPLACE_EXISTING);
         } else {
             Files.move(file, destination);

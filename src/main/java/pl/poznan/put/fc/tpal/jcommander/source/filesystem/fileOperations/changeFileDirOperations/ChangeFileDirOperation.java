@@ -16,6 +16,7 @@ import java.text.DateFormat;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
+
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import pl.poznan.put.fc.tpal.jcommander.source.filesystem.fileOperations.FileOperation;

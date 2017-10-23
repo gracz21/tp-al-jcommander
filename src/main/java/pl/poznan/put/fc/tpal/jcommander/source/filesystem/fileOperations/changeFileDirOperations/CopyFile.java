@@ -13,13 +13,14 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
  * @author Kamil Walkowiak
  */
 public class CopyFile extends ChangeFileDirOperation {
+
     public CopyFile(List<Path> paths, BooleanProperty isCanceledProperty, Path targetPath) {
         super(paths, isCanceledProperty, targetPath);
     }
 
     @Override
     void changeFileDirOperation(Path file, Path destination, boolean replace) throws IOException {
-        if(replace) {
+        if (replace) {
             Files.copy(file, destination, REPLACE_EXISTING);
         } else {
             Files.copy(file, destination);

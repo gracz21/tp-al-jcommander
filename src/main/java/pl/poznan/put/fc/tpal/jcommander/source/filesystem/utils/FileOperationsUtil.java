@@ -10,8 +10,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javafx.collections.ObservableList;
+
 import javax.swing.Icon;
 import javax.swing.filechooser.FileSystemView;
+
 import pl.poznan.put.fc.tpal.jcommander.source.filesystem.models.FileListEntry;
 
 /**
@@ -46,7 +48,7 @@ public abstract class FileOperationsUtil {
     }
 
     public static ObservableList<FileListEntry> listPathContent(ObservableList<FileListEntry> fileListEntries,
-            File pathContent) throws IOException {
+                                                                File pathContent) throws IOException {
         if (pathContent.exists()) {
             if (pathContent.isDirectory()) {
                 File[] files = pathContent.listFiles(file -> !file.isHidden() && Files.isReadable(file.toPath()));

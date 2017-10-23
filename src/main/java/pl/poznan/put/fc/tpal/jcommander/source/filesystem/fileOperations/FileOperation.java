@@ -11,6 +11,7 @@ import java.util.List;
  * @author Kamil Walkowiak
  */
 public abstract class FileOperation extends SimpleFileVisitor<Path> {
+
     protected ReadOnlyLongWrapper progress;
     protected List<Path> paths;
     protected BooleanProperty isCanceledProperty;

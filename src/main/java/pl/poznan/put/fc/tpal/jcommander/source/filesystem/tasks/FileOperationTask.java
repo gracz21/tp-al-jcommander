@@ -12,6 +12,7 @@ import java.io.IOException;
  * @author Kamil Walkowiak
  */
 public class FileOperationTask extends Task<Void> {
+
     private FileOperation fileOperation;
     private BooleanProperty isCanceledProperty;
     private ProgressDialogView progressDialog;
