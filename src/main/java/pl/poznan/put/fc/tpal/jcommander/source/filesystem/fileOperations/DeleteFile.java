@@ -1,4 +1,4 @@
-package pl.poznan.put.fc.tpal.jcommander.fileOperations;
+package pl.poznan.put.fc.tpal.jcommander.source.filesystem.fileOperations;
 
 import javafx.beans.property.BooleanProperty;
 
@@ -16,14 +16,15 @@ import static java.nio.file.FileVisitResult.TERMINATE;
  * @author Kamil Walkowiak
  */
 public class DeleteFile extends FileOperation {
+
     public DeleteFile(List<Path> paths, BooleanProperty isCanceledProperty) {
         super(paths, isCanceledProperty);
     }
 
     @Override
     public void execute() throws IOException {
-        for(Path path: paths) {
-            if(isCanceledProperty.get()) {
+        for (Path path : paths) {
+            if (isCanceledProperty.get()) {
                 break;
             }
             Files.walkFileTree(path, this);
@@ -31,10 +32,9 @@ public class DeleteFile extends FileOperation {
     }
 
     @Override
-    public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException
-    {
-        if(!isCanceledProperty.get()) {
-            if(Files.isWritable(file)) {
+    public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+        if (!isCanceledProperty.get()) {
+            if (Files.isWritable(file)) {
                 progress.set(progress.getValue() + Files.size(file));
                 Files.delete(file);
             } else {
@@ -48,8 +48,8 @@ public class DeleteFile extends FileOperation {
 
     @Override
     public FileVisitResult postVisitDirectory(Path dir, IOException e) throws IOException {
-        if(!isCanceledProperty.get()) {
-            if(e == null) {
+        if (!isCanceledProperty.get()) {
+            if (e == null) {
                 Files.delete(dir);
             }
             return CONTINUE;

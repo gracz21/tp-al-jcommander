@@ -1,23 +1,29 @@
-package pl.poznan.put.fc.tpal.jcommander.models;
+package pl.poznan.put.fc.tpal.jcommander.source.filesystem.models;
 
+import java.awt.image.BufferedImage;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
-
-import javax.swing.*;
-import java.awt.image.BufferedImage;
+import javax.swing.Icon;
 
 /**
  * @author Kamil Walkowiak
  */
 public class NameColumnEntry {
+
     private StringProperty fileName;
+    private boolean isDirectory;
     private Image icon;
 
-    public NameColumnEntry(String fileName, Icon swingIcon) {
+    public NameColumnEntry(String fileName, boolean isDirectory, Icon swingIcon) {
         this.fileName = new SimpleStringProperty(fileName);
         this.icon = convertIcon(swingIcon);
+        this.isDirectory = isDirectory;
+    }
+
+    public boolean isDirectory() {
+        return isDirectory;
     }
 
     public String getFileName() {

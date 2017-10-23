@@ -1,10 +1,10 @@
-package pl.poznan.put.fc.tpal.jcommander.tasks;
+package pl.poznan.put.fc.tpal.jcommander.source.filesystem.tasks;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.concurrent.Task;
-import pl.poznan.put.fc.tpal.jcommander.fileOperations.FileOperation;
-import pl.poznan.put.fc.tpal.jcommander.utils.FileOperationsUtil;
-import pl.poznan.put.fc.tpal.jcommander.views.ProgressDialogView;
+import pl.poznan.put.fc.tpal.jcommander.source.filesystem.fileOperations.FileOperation;
+import pl.poznan.put.fc.tpal.jcommander.source.filesystem.utils.FileOperationsUtil;
+import pl.poznan.put.fc.tpal.jcommander.source.filesystem.views.ProgressDialogView;
 
 import java.io.IOException;
 
@@ -12,6 +12,7 @@ import java.io.IOException;
  * @author Kamil Walkowiak
  */
 public class FileOperationTask extends Task<Void> {
+
     private FileOperation fileOperation;
     private BooleanProperty isCanceledProperty;
     private ProgressDialogView progressDialog;

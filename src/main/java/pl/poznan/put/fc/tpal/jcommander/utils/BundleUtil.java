@@ -8,6 +8,7 @@ import java.util.ResourceBundle;
  * @author Kamil Walkowiak
  */
 public class BundleUtil extends Observable {
+
     private static BundleUtil ourInstance = new BundleUtil();
     private Locale currentLocale;
     private Locale englishLocale;
@@ -21,7 +22,7 @@ public class BundleUtil extends Observable {
     private BundleUtil() {
         this.englishLocale = new Locale("en");
         this.polishLocale = new Locale("pl");
-        this.currentLocale = polishLocale;
+        this.currentLocale = englishLocale;
         this.bundle = ResourceBundle.getBundle("strings", currentLocale);
     }
 
@@ -34,7 +35,7 @@ public class BundleUtil extends Observable {
     }
 
     public void setCurrentLocale(String locale) {
-        if(locale.equals("en")) {
+        if (locale.equals("en")) {
             this.currentLocale = englishLocale;
         } else {
             this.currentLocale = polishLocale;

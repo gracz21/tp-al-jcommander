@@ -1,11 +1,10 @@
-package pl.poznan.put.fc.tpal.jcommander.fileOperations.changeFileDirOperations;
+package pl.poznan.put.fc.tpal.jcommander.source.filesystem.fileOperations.changeFileDirOperations;
 
-import javafx.application.Platform;
-import javafx.beans.property.BooleanProperty;
-import pl.poznan.put.fc.tpal.jcommander.fileOperations.FileOperation;
-import pl.poznan.put.fc.tpal.jcommander.utils.BundleUtil;
-import pl.poznan.put.fc.tpal.jcommander.utils.DialogUtil;
-import pl.poznan.put.fc.tpal.jcommander.utils.ReplaceOptionsUtil;
+import static java.nio.file.FileVisitResult.CONTINUE;
+import static java.nio.file.FileVisitResult.TERMINATE;
+import static pl.poznan.put.fc.tpal.jcommander.utils.ReplaceOptionsUtil.KEEP_ALL;
+import static pl.poznan.put.fc.tpal.jcommander.utils.ReplaceOptionsUtil.NO_ALL;
+import static pl.poznan.put.fc.tpal.jcommander.utils.ReplaceOptionsUtil.YES_ALL;
 
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
@@ -18,20 +17,22 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
-import static java.nio.file.FileVisitResult.CONTINUE;
-import static java.nio.file.FileVisitResult.TERMINATE;
-import static pl.poznan.put.fc.tpal.jcommander.utils.ReplaceOptionsUtil.KEEP_ALL;
-import static pl.poznan.put.fc.tpal.jcommander.utils.ReplaceOptionsUtil.NO_ALL;
-import static pl.poznan.put.fc.tpal.jcommander.utils.ReplaceOptionsUtil.YES_ALL;
+import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import pl.poznan.put.fc.tpal.jcommander.source.filesystem.fileOperations.FileOperation;
+import pl.poznan.put.fc.tpal.jcommander.utils.BundleUtil;
+import pl.poznan.put.fc.tpal.jcommander.utils.DialogUtil;
+import pl.poznan.put.fc.tpal.jcommander.utils.ReplaceOptionsUtil;
 
 /**
  * @author Kamil Walkowiak
  */
 public abstract class ChangeFileDirOperation extends FileOperation {
-    Path targetPath;
+
+    private Path targetPath;
     Path currentSourcePath;
     Path currentTargetPath;
-    ReplaceOptionsUtil replaceAll;
+    private ReplaceOptionsUtil replaceAll;
 
     public ChangeFileDirOperation(List<Path> paths, BooleanProperty isCanceledProperty, Path targetPath) {
         super(paths, isCanceledProperty);
@@ -40,9 +41,9 @@ public abstract class ChangeFileDirOperation extends FileOperation {
 
     @Override
     public void execute() throws IOException {
-        if(Files.isWritable(targetPath)) {
-            for(Path path : paths) {
-                if(isCanceledProperty.get()) {
+        if (Files.isWritable(targetPath)) {
+            for (Path path : paths) {
+                if (isCanceledProperty.get()) {
                     break;
                 }
                 currentSourcePath = path;
@@ -56,9 +57,9 @@ public abstract class ChangeFileDirOperation extends FileOperation {
 
     @Override
     public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-        if(!isCanceledProperty.get()) {
+        if (!isCanceledProperty.get()) {
             Path path = currentTargetPath.resolve(currentSourcePath.relativize(dir));
-            if(!Files.exists(path)) {
+            if (!Files.exists(path)) {
                 Files.copy(dir, path);
             }
             return CONTINUE;
@@ -69,15 +70,15 @@ public abstract class ChangeFileDirOperation extends FileOperation {
 
     @Override
     public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-        if(!isCanceledProperty.get()) {
+        if (!isCanceledProperty.get()) {
             Path path = currentTargetPath.resolve(currentSourcePath.relativize(file).toString());
             String fileName = file.getFileName().toString();
-            if(!Files.exists(path)) {
+            if (!Files.exists(path)) {
                 changeFileDirOperation(file, path, false);
             } else {
-                if(replaceAll == null) {
+                if (replaceAll == null) {
                     try {
-                        switch(showReplaceDialog(file, path, fileName)) {
+                        switch (showReplaceDialog(file, path, fileName)) {
                             case YES:
                                 changeFileDirOperation(file, path, true);
                                 break;
@@ -98,11 +99,11 @@ public abstract class ChangeFileDirOperation extends FileOperation {
                                 replaceAll = NO_ALL;
                                 break;
                         }
-                    } catch(InterruptedException | ExecutionException e) {
+                    } catch (InterruptedException | ExecutionException e) {
                         e.printStackTrace();
                     }
                 } else {
-                    switch(replaceAll) {
+                    switch (replaceAll) {
                         case YES_ALL:
                             changeFileDirOperation(file, path, true);
                             break;
@@ -121,15 +122,16 @@ public abstract class ChangeFileDirOperation extends FileOperation {
         }
     }
 
-    private ReplaceOptionsUtil showReplaceDialog(Path file, Path old, String fileName) throws IOException, ExecutionException, InterruptedException {
+    private ReplaceOptionsUtil showReplaceDialog(Path file, Path old, String fileName)
+            throws IOException, ExecutionException, InterruptedException {
         String[] sizes = new String[]{Long.toString(Files.size(old)), Long.toString(Files.size(file))};
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT,
                 BundleUtil.getInstance().getCurrentLocale());
         String[] dates = new String[]{df.format(Files.getLastModifiedTime(file).toMillis()),
                 df.format(Files.getLastModifiedTime(old).toMillis())};
 
-        FutureTask<ReplaceOptionsUtil> dialog =
-                new FutureTask<>(() -> DialogUtil.replaceDialog(fileName, sizes, dates));
+        FutureTask<ReplaceOptionsUtil> dialog = new FutureTask<>(
+                () -> DialogUtil.replaceDialog(fileName, sizes, dates));
         Platform.runLater(dialog);
 
         return dialog.get();

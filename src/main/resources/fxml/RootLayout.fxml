@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
@@ -10,62 +11,56 @@
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<?import java.util.ArrayList?>
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.poznan.put.fc.tpal.jcommander.controllers.RootController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.poznan.put.fc.tpal.jcommander.controllers.RootController">
     <VBox prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <MenuBar prefWidth="600.0">
             <Menu fx:id="fileMenu" mnemonicParsing="false" text="%menu.file">
                 <MenuItem fx:id="close" mnemonicParsing="false" onAction="#handleMenuClose" text="%file.close" />
             </Menu>
-         <Menu fx:id="changeLanguageMenu" mnemonicParsing="false" text="%menu.changeLanguage">
-            <items>
-               <RadioMenuItem fx:id="changeToEnglish" mnemonicParsing="false" onAction="#handleMenuToEnglish" text="English">
-                  <toggleGroup>
-                     <ToggleGroup fx:id="language" />
-                  </toggleGroup>
-               </RadioMenuItem>
-               <RadioMenuItem fx:id="changeToPolish" mnemonicParsing="false" onAction="#handleMenuToPolish" selected="true" text="Polski" toggleGroup="$language" />
-            </items>
-         </Menu>
+          <Menu fx:id="changeLanguageMenu" mnemonicParsing="false" text="%menu.changeLanguage">
+            <RadioMenuItem fx:id="changeToEnglish" mnemonicParsing="false" onAction="#handleMenuToEnglish" text="English">
+              <toggleGroup>
+                <ToggleGroup fx:id="language" />
+              </toggleGroup>
+            </RadioMenuItem>
+            <RadioMenuItem fx:id="changeToPolish" mnemonicParsing="false" onAction="#handleMenuToPolish" selected="true" text="Polski" toggleGroup="$language" />
+          </Menu>
             <Menu fx:id="helpMenu" mnemonicParsing="false" text="%menu.help">
                 <MenuItem fx:id="about" mnemonicParsing="false" text="%help.about" />
             </Menu>
         </MenuBar>
         <SplitPane dividerPositions="0.5" prefHeight="372.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
-            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="295.0">
-            <children>
-               <TabPane fx:id="leftTabPane" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                 <tabs>
-                   <Tab text="Untitled Tab 1">
-                        <content>
-                           <BorderPane prefHeight="200.0" prefWidth="200.0" />
-                        </content>
-                   </Tab>
-                   <Tab text="+" />
-                 </tabs>
-               </TabPane>
-            </children></AnchorPane>
-            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
-            <children>
-               <TabPane fx:id="rightTabPane" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                 <tabs>
-                   <Tab text="Untitled Tab 1">
-                        <content>
-                           <BorderPane prefHeight="200.0" prefWidth="200.0" />
-                        </content>
-                   </Tab>
-                   <Tab text="+" />
-                 </tabs>
-               </TabPane>
-            </children></AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="295.0">
+            <TabPane fx:id="leftTabPane" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+              <Tab text="Untitled Tab 1">
+                <BorderPane prefHeight="200.0" prefWidth="200.0" />
+              </Tab>
+              <Tab text="+" />
+            </TabPane>
+          </AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+            <TabPane fx:id="rightTabPane" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+              <Tab text="Untitled Tab 1">
+                <BorderPane prefHeight="200.0" prefWidth="200.0" />
+              </Tab>
+              <Tab text="+" />
+            </TabPane>
+          </AnchorPane>
         </SplitPane>
+      <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="1024.0" spacing="5.0">
+         <children>
+            <Button mnemonicParsing="false" text="F2 Rename" />
+            <Button layoutX="107.0" layoutY="12.0" mnemonicParsing="false" text="F3 View" />
+            <Button layoutX="107.0" layoutY="12.0" mnemonicParsing="false" text="F4 Edit" />
+            <Button layoutX="107.0" layoutY="12.0" mnemonicParsing="false" text="F5 Copy" />
+            <Button layoutX="107.0" layoutY="12.0" mnemonicParsing="false" text="F6 Move" />
+            <Button layoutX="107.0" layoutY="12.0" mnemonicParsing="false" text="F7 New Dir" />
+            <Button layoutX="204.0" layoutY="12.0" mnemonicParsing="false" text="F8 Delete" />
+            <Button layoutX="500.0" layoutY="12.0" mnemonicParsing="false" text="F10 Quit" />
+         </children>
+      </HBox>
     </VBox>
-    <fx:define>
-        <ArrayList fx:id="tabPanes">
-            <fx:reference source="leftTabPane" />
-            <fx:reference source="rightTabPane" />
-        </ArrayList>
-    </fx:define>
 </AnchorPane>

@@ -3,6 +3,7 @@ package pl.poznan.put.fc.tpal.jcommander.utils;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
+import pl.poznan.put.fc.tpal.jcommander.config.Props;
 
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -11,6 +12,7 @@ import java.util.ResourceBundle;
  * @author Kamil Walkowiak
  */
 public abstract class DialogUtil {
+
     public static boolean deleteDialog() {
         ResourceBundle bundle = BundleUtil.getInstance().getBundle();
 
@@ -47,7 +49,7 @@ public abstract class DialogUtil {
         dialog.setTitle(bundle.getString("warningTitle"));
         dialog.setHeaderText(bundle.getString("fileExistHeader"));
         dialog.setContentText(bundle.getString("replace") + "\n" + fileName + "\n" + sizes[0] + " B, " + dates[0] +
-        "\n" + bundle.getString("with") + "\n" + fileName + "\n" + sizes[1] + " B, " + dates[1]);
+                "\n" + bundle.getString("with") + "\n" + fileName + "\n" + sizes[1] + " B, " + dates[1]);
 
         ButtonType buttonReplace = new ButtonType(bundle.getString("replaceOption"));
         ButtonType buttonKeep = new ButtonType(bundle.getString("keepOption"));
@@ -60,16 +62,16 @@ public abstract class DialogUtil {
                 buttonReplaceAll, buttonKeepAll, buttonSkipAll);
         Optional<ButtonType> selectedOption = dialog.showAndWait();
 
-        if(selectedOption.isPresent()) {
-            if(selectedOption.get() == buttonReplace) {
+        if (selectedOption.isPresent()) {
+            if (selectedOption.get() == buttonReplace) {
                 result = ReplaceOptionsUtil.YES;
-            } else if(selectedOption.get() == buttonKeep) {
+            } else if (selectedOption.get() == buttonKeep) {
                 result = ReplaceOptionsUtil.KEEP;
-            } else if(selectedOption.get() == buttonSkip) {
+            } else if (selectedOption.get() == buttonSkip) {
                 result = ReplaceOptionsUtil.NO;
-            } else if(selectedOption.get() == buttonReplaceAll) {
+            } else if (selectedOption.get() == buttonReplaceAll) {
                 result = ReplaceOptionsUtil.YES_ALL;
-            } else if(selectedOption.get() == buttonKeepAll) {
+            } else if (selectedOption.get() == buttonKeepAll) {
                 result = ReplaceOptionsUtil.KEEP_ALL;
             } else {
                 result = ReplaceOptionsUtil.NO_ALL;
@@ -79,5 +81,16 @@ public abstract class DialogUtil {
         }
 
         return result;
+    }
+
+    public static void propsAlert() {
+        // TODO text
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error while reading settings");
+        alert.setHeaderText("Could not access application settings. May not have enough access rights." +
+                "\nSee message below for details.");
+        //alert.setContentText(String.join("\n", Props.errorMessage.split("(?<=\\G.{50})")));
+        alert.setContentText(Props.errorMessage);
+        alert.showAndWait();
     }
 }

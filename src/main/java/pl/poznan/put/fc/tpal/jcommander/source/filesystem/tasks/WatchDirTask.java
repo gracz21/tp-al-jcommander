@@ -1,4 +1,4 @@
-package pl.poznan.put.fc.tpal.jcommander.tasks;
+package pl.poznan.put.fc.tpal.jcommander.source.filesystem.tasks;
 
 import javafx.beans.property.StringProperty;
 
@@ -14,12 +14,13 @@ import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
  * @author Kamil Walkowiak
  */
 public class WatchDirTask extends java.util.Observable {
+
     private static WatchDirTask instance;
     private Map<StringProperty, WatchKey> watchKeyMap;
     private WatchService watcher;
 
     public static WatchDirTask getInstance() throws IOException {
-        if(instance == null) {
+        if (instance == null) {
             instance = new WatchDirTask();
         }
         return instance;
@@ -27,7 +28,7 @@ public class WatchDirTask extends java.util.Observable {
 
     private WatchDirTask() throws IOException {
         watchKeyMap = new HashMap<>();
-        this.watcher = FileSystems.getDefault().newWatchService();
+        watcher = FileSystems.getDefault().newWatchService();
     }
 
     public void call() throws Exception {
@@ -62,14 +63,14 @@ public class WatchDirTask extends java.util.Observable {
         pathProperty.addListener((observable) -> {
             WatchKey old = watchKeyMap.get(pathProperty);
             watchKeyMap.remove(pathProperty);
-            if(!watchKeyMap.containsValue(old)) {
+            if (!watchKeyMap.containsValue(old)) {
                 old.cancel();
             }
             Path newDir = Paths.get(pathProperty.get());
             WatchKey newKey = null;
             try {
                 newKey = newDir.register(watcher, ENTRY_CREATE, ENTRY_DELETE, ENTRY_MODIFY);
-            } catch(IOException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
             watchKeyMap.put(pathProperty, newKey);

@@ -1,5 +1,7 @@
-package pl.poznan.put.fc.tpal.jcommander.views;
+package pl.poznan.put.fc.tpal.jcommander.source.filesystem.views;
 
+import java.io.IOException;
+import java.util.ResourceBundle;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -11,13 +13,11 @@ import pl.poznan.put.fc.tpal.jcommander.Main;
 import pl.poznan.put.fc.tpal.jcommander.controllers.ProgressDialogController;
 import pl.poznan.put.fc.tpal.jcommander.utils.BundleUtil;
 
-import java.io.IOException;
-import java.util.ResourceBundle;
-
 /**
  * @author Kamil Walkowiak
  */
 public class ProgressDialogView {
+
     private Stage stage;
     private ProgressDialogController controller;
 
@@ -35,7 +35,7 @@ public class ProgressDialogView {
         loader.setResources(bundle);
         Parent root = loader.load();
 
-        controller =  loader.getController();
+        controller = loader.getController();
 
         stage.setScene(new Scene(root));
     }
